@@ -1,27 +1,108 @@
-<div class="auth-container">
-  <p-card header="Registro" styleClass="auth-card">
 
-    <div class="field">
-      <label>Nombre</label>
-      <input pInputText type="text" placeholder="Nombre completo" />
-    </div>
+<p-toast></p-toast>
 
-    <div class="field">
-      <label>Email</label>
-      <input pInputText type="email" placeholder="correo@ejemplo.com" />
-    </div>
 
-    <div class="field">
-      <label>Contraseña</label>
-      <input pInputText type="password" placeholder="********" />
-    </div>
+  <p-card header="Registro de Usuario" class="w-full md:w-6 lg:w-4">
 
-    <p-button
-      label="Registrarse"
-      icon="pi pi-user-plus"
-      severity="success"
-      class="w-full"
-    ></p-button>
+    <form [formGroup]="registerForm" class="flex flex-column gap-3">
+
+      
+      <div class="flex flex-column gap-1">
+        <label>Usuario</label>
+        <input pInputText formControlName="user" />
+        <small class="p-error" *ngIf="registerForm.get('user')?.touched && registerForm.get('user')?.invalid">
+          El usuario es obligatorio
+        </small>
+      </div>
+
+      
+      <div class="flex flex-column gap-1">
+        <label>Email</label>
+        <input pInputText formControlName="email" />
+        <small class="p-error" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
+          Ingresa un correo válido
+        </small>
+      </div>
+
+      <
+      <div class="flex flex-column gap-1">
+        <label>Contraseña</label>
+        <p-password
+          formControlName="password"
+          [toggleMask]="true"
+          promptLabel="Ingresa una contraseña"
+          weakLabel="Débil"
+          mediumLabel="Media"
+          strongLabel="Fuerte">
+        </p-password>
+        <small class="p-error" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
+          Mínimo 10 caracteres y un símbolo especial
+        </small>
+      </div>
+
+      
+      <div class="flex flex-column gap-1">
+        <label>Confirmar contraseña</label>
+        <p-password
+          formControlName="confirmPassword"
+          [toggleMask]="true"
+          [feedback]="false">
+        </p-password>
+        <small class="p-error"
+          *ngIf="registerForm.get('confirmPassword')?.touched &&
+                 registerForm.value.password !== registerForm.value.confirmPassword">
+          Las contraseñas no coinciden
+        </small>
+      </div>
+
+     
+      <div class="flex flex-column gap-1">
+        <label>Nombre completo</label>
+        <input pInputText formControlName="fullName" />
+        <small class="p-error" *ngIf="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid">
+          El nombre es obligatorio
+        </small>
+      </div>
+
+      
+      <div class="flex flex-column gap-1">
+        <label>Dirección</label>
+        <input pInputText formControlName="address" />
+        <small class="p-error" *ngIf="registerForm.get('address')?.touched && registerForm.get('address')?.invalid">
+          La dirección es obligatoria
+        </small>
+      </div>
+
+      
+      <div class="flex flex-column gap-1">
+        <label>Edad</label>
+        <input pInputText type="number" formControlName="age" />
+        <small class="p-error"
+          *ngIf="registerForm.get('age')?.touched && registerForm.get('age')?.errors?.['min']">
+          Debes ser mayor de edad (18+)
+        </small>
+      </div>
+
+      
+      <div class="flex flex-column gap-1">
+        <label>Teléfono (10 dígitos)</label>
+        <input pInputText formControlName="phone" />
+        <small class="p-error"
+          *ngIf="registerForm.get('phone')?.touched && registerForm.get('phone')?.invalid">
+          El teléfono debe contener 10 dígitos numéricos
+        </small>
+      </div>
+
+      
+      <p-button
+        label="Registrar"
+        icon="pi pi-user-plus"
+        severity="success"
+        class="w-full"
+        [disabled]="registerForm.invalid"
+        (onClick)="register()">
+      </p-button>
+
+    </form>
 
   </p-card>
-</div>

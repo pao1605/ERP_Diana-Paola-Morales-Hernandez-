@@ -1,21 +1,32 @@
-<div class="auth-container">
-  <p-card header="Iniciar Sesión" styleClass="auth-card">
+<p-toast></p-toast>
 
-    <div class="field">
-      <label>Email</label>
-      <input pInputText type="email" placeholder="correo@ejemplo.com" />
-    </div>
 
-    <div class="field">
-      <label>Contraseña</label>
-      <input pInputText type="password" placeholder="********" />
-    </div>
+  <p-card header="Iniciar Sesión" class="w-full md:w-4 lg:w-3">
 
-    <p-button
-      label="Ingresar"
-      icon="pi pi-sign-in"
-      class="w-full"
-    ></p-button>
+    <form [formGroup]="loginForm" class="flex flex-column gap-3">
+
+      <div class="flex flex-column gap-1">
+        <label>Usuario</label>
+        <input pInputText formControlName="user" />
+      </div>
+
+      <div class="flex flex-column gap-1">
+        <label>Contraseña</label>
+        <p-password
+          formControlName="password"
+          [toggleMask]="true"
+          [feedback]="false">
+        </p-password>
+      </div>
+
+      <p-button
+        label="Ingresar"
+        icon="pi pi-sign-in"
+        class="w-full"
+        (onClick)="login()"
+        [disabled]="loginForm.invalid">
+      </p-button>
+
+    </form>
 
   </p-card>
-</div>
