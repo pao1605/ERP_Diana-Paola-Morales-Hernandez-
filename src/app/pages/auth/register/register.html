@@ -1,8 +1,7 @@
-
 <p-toast></p-toast>
 
-
-  <p-card header="Registro de Usuario" class="w-full md:w-6 lg:w-4">
+<div class="auth-container">
+  <p-card header="Registro de Usuario" class="auth-card">
 
     <form [formGroup]="registerForm" class="flex flex-column gap-3">
 
@@ -55,7 +54,7 @@
         </small>
       </div>
 
-     
+      
       <div class="flex flex-column gap-1">
         <label>Nombre completo</label>
         <input pInputText formControlName="fullName" />
@@ -106,3 +105,4 @@
     </form>
 
   </p-card>
+</div>

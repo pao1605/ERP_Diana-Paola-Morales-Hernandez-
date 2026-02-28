@@ -23,7 +23,8 @@ import { ToastModule } from 'primeng/toast';
     ToastModule
   ],
   providers: [MessageService],
-  templateUrl: './register.html'
+  templateUrl: './register.html',
+  styleUrls: ['./register.scss'] 
 })
 export class RegisterComponent {
 

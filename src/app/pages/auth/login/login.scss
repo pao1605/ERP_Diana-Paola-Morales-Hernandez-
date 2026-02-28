@@ -1,14 +1,18 @@
 .auth-container {
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  background: #f8f9fa;
 }
 
 .auth-card {
-  width: 350px;
+  width: 100%;
+  max-width: 380px;
 }
 
 .field {
-  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }

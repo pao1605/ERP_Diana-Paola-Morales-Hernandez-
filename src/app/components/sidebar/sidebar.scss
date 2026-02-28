@@ -1,0 +1,74 @@
+/* Estilización del contenedor principal del Sidebar */
+.sidebar-container {
+  height: 100vh;
+  background: #fff0f5; /* Un rosa lavanda muy suave de fondo */
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1rem;
+  border-right: 2px solid #fce7f3;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 3rem;
+  justify-content: center;
+
+  .logo-box {
+    background: #ec4899; /* Rosa fuerte para el logo */
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+  }
+
+  .brand-name {
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: #831843; /* Bordó/Rosa oscuro para el texto */
+  }
+}
+
+/* Ajustes del Menú de PrimeNG */
+::ng-deep .custom-sidebar-menu {
+  background: transparent !important;
+  border: none !important;
+
+  .p-menu-list {
+    gap: 1rem; /* Más espacio entre opciones */
+  }
+
+  .p-menuitem-link {
+    background: white !important; /* Opciones en blanco */
+    border-radius: 15px !important;
+    padding: 1.2rem 1.5rem !important; /* Más grandes */
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    transition: all 0.3s ease !important;
+
+    .p-menuitem-text {
+      color: #be185d !important; /* Texto rosa */
+      font-weight: 600 !important;
+      font-size: 1.1rem !important;
+    }
+
+    .p-menuitem-icon {
+      color: #f472b6 !important; /* Iconos rosa claro */
+      font-size: 1.3rem !important;
+    }
+
+    &:hover {
+      transform: translateX(8px);
+      background: #fdf2f8 !important; /* Rosa pastel al pasar el mouse */
+      .p-menuitem-text, .p-menuitem-icon {
+        color: #db2777 !important;
+      }
+    }
+  }
+}

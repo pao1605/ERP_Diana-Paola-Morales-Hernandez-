@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 
 import { ButtonModule } from 'primeng/button';
@@ -20,21 +21,21 @@ import { ToastModule } from 'primeng/toast';
     ToastModule
   ],
   providers: [MessageService],
-  templateUrl: './login.html'
+  templateUrl: './login.html',
+  styleUrls: ['./login.scss']
 })
 export class LoginComponent {
 
   loginForm!: FormGroup;
 
-  
   private USER = 'Pao';
   private PASS = 'Pao@162005';
 
   constructor(
     private fb: FormBuilder,
-    private message: MessageService
+    private message: MessageService,
+    private router: Router
   ) {
-
     this.loginForm = this.fb.group({
       user: ['', Validators.required],
       password: ['', Validators.required]
@@ -43,7 +44,6 @@ export class LoginComponent {
 
   login() {
 
-    
     if (this.loginForm.invalid) {
       this.message.add({
         severity: 'warn',
@@ -55,16 +55,19 @@ export class LoginComponent {
 
     const { user, password } = this.loginForm.value;
 
-    
     if (user === this.USER && password === this.PASS) {
       this.message.add({
         severity: 'success',
         summary: 'Login correcto',
         detail: 'Bienvenido al sistema'
       });
-    } 
-   
-    else {
+
+      
+      setTimeout(() => {
+        this.router.navigate(['/home']);
+      }, 800);
+
+    } else {
       this.message.add({
         severity: 'error',
         summary: 'Error',

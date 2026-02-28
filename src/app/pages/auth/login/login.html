@@ -1,16 +1,15 @@
 <p-toast></p-toast>
 
-
-  <p-card header="Iniciar Sesión" class="w-full md:w-4 lg:w-3">
+  <p-card header="Iniciar Sesión" class="auth-card">
 
     <form [formGroup]="loginForm" class="flex flex-column gap-3">
 
-      <div class="flex flex-column gap-1">
+      <div class="field">
         <label>Usuario</label>
         <input pInputText formControlName="user" />
       </div>
 
-      <div class="flex flex-column gap-1">
+      <div class="field">
         <label>Contraseña</label>
         <p-password
           formControlName="password"
