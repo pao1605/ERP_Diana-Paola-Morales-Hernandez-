@@ -1,74 +1,106 @@
-/* Estilización del contenedor principal del Sidebar */
-.sidebar-container {
+.sidebar-wrapper {
   height: 100vh;
-  background: #fff0f5; /* Un rosa lavanda muy suave de fondo */
   display: flex;
   flex-direction: column;
+  background: #ffffff;
+  border-right: 1px solid #fce7f3;
   padding: 2rem 1rem;
-  border-right: 2px solid #fce7f3;
+  box-shadow: 4px 0 15px rgba(236, 72, 153, 0.03);
 }
 
-.sidebar-brand {
+.brand-section {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding-bottom: 3rem;
-  justify-content: center;
+  gap: 12px;
+  padding: 0 0.5rem 3rem;
 
-  .logo-box {
-    background: #ec4899; /* Rosa fuerte para el logo */
+  .logo-circle {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
     color: white;
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
   }
 
-  .brand-name {
+  .brand-text {
     font-weight: 800;
-    font-size: 1.4rem;
-    color: #831843; /* Bordó/Rosa oscuro para el texto */
+    font-size: 1.25rem;
+    color: #831843;
+    letter-spacing: -0.5px;
   }
 }
 
-/* Ajustes del Menú de PrimeNG */
-::ng-deep .custom-sidebar-menu {
-  background: transparent !important;
-  border: none !important;
+.menu-section {
+  flex-grow: 1;
 
-  .p-menu-list {
-    gap: 1rem; /* Más espacio entre opciones */
+  ::ng-deep .elegant-menu {
+    background: transparent !important;
+    border: none !important;
+    width: 100% !important;
+
+    .p-menuitem-link {
+      border-radius: 12px !important;
+      padding: 1rem 1.2rem !important;
+      margin-bottom: 0.5rem;
+      transition: all 0.2s ease !important;
+      background: transparent !important;
+
+      .p-menuitem-icon {
+        color: #f472b6 !important;
+        font-size: 1.1rem !important;
+        margin-right: 12px !important;
+      }
+
+      .p-menuitem-text {
+        color: #64748b !important; // Gris elegante para inactivos
+        font-weight: 600 !important;
+      }
+
+      &:hover {
+        background: #fdf2f8 !important; // Rosa muy clarito
+        transform: translateX(5px);
+        
+        .p-menuitem-text { color: #db2777 !important; }
+        .p-menuitem-icon { color: #db2777 !important; }
+      }
+    }
+  }
+}
+
+.footer-section {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  .user-card {
+    background: #fdf2f8;
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #be185d;
+    font-weight: 700;
+    border: 1px solid #fce7f3;
   }
 
-  .p-menuitem-link {
-    background: white !important; /* Opciones en blanco */
-    border-radius: 15px !important;
-    padding: 1.2rem 1.5rem !important; /* Más grandes */
-    margin-bottom: 0.5rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-    transition: all 0.3s ease !important;
-
-    .p-menuitem-text {
-      color: #be185d !important; /* Texto rosa */
-      font-weight: 600 !important;
-      font-size: 1.1rem !important;
-    }
-
-    .p-menuitem-icon {
-      color: #f472b6 !important; /* Iconos rosa claro */
-      font-size: 1.3rem !important;
-    }
-
-    &:hover {
-      transform: translateX(8px);
-      background: #fdf2f8 !important; /* Rosa pastel al pasar el mouse */
-      .p-menuitem-text, .p-menuitem-icon {
-        color: #db2777 !important;
-      }
+  .version-tag {
+    span {
+      font-size: 0.7rem;
+      color: #f472b6;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.8;
     }
   }
 }

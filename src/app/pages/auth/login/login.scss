@@ -1,18 +1,101 @@
-.auth-container {
-  min-height: 100vh;
+:host {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f8f9fa;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fce4ec 0%, #fff 100%);
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
-.auth-card {
-  width: 100%;
-  max-width: 380px;
+::ng-deep .auth-card .p-card {
+  width: 90%; 
+  max-width: 480px; 
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  border: none;
+  overflow: hidden;
+  margin: 20px;
+}
+
+::ng-deep .auth-card .p-card-body {
+  padding: 3rem 2.5rem;
+}
+
+::ng-deep .auth-card .p-card-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #880e4f;
+  text-align: center;
+  margin-bottom: 2.5rem;
 }
 
 .field {
+  margin-bottom: 1.5rem;
+}
+
+.field label {
+  color: #ad1457;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+::ng-deep .p-inputtext, 
+::ng-deep .p-password input {
+  width: 100%;
+  padding: 1.2rem;
+  border-radius: 12px;
+  border: 1px solid #f8bbd0;
+  background-color: #fdf2f8;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+::ng-deep .p-inputtext:enabled:focus,
+::ng-deep .p-password input:enabled:focus {
+  border-color: #ec407a;
+  box-shadow: 0 0 0 0.2rem rgba(236, 64, 122, 0.25);
+  background-color: #ffffff;
+}
+
+::ng-deep .p-password {
+    width: 100%;
+}
+
+::ng-deep .p-password-panel {
+    border-radius: 12px;
+}
+
+::ng-deep .p-button {
+  background-color: #ec407a !important;
+  border: none !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 1.2rem;
+  padding: 1.2rem !important;
+  border-radius: 12px;
+  transition: transform 0.2s, background-color 0.3s, box-shadow 0.3s !important;
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+::ng-deep .p-button:enabled:hover {
+  background-color: #d81b60 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(216, 27, 96, 0.3);
+}
+
+::ng-deep .p-button:disabled {
+  background-color: #f48fb1 !important; 
+}
+
+::ng-deep .p-button .p-button-icon {
+  color: #ffffff;
+  font-size: 1.3rem;
 }

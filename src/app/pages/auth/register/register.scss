@@ -1,20 +1,108 @@
+
 .auth-container {
-  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f4f6f9;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fce4ec 0%, #ffffff 100%);
+  padding: 40px 20px; 
 }
 
-.auth-card {
+
+.auth-card ::ng-deep .p-card {
   width: 100%;
-  max-width: 480px;
+  max-width: 650px; 
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(255, 182, 193, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.98);
+  overflow: hidden;
 }
+
+
+.auth-card ::ng-deep .p-card-header {
+  text-align: center;
+  padding-top: 2.5rem;
+  color: #c2185b;
+  font-weight: 700;
+  font-size: 2.2rem;
+}
+
+
+.auth-card ::ng-deep .p-card-body {
+  padding: 2rem 3rem !important;
+}
+
+
+.flex.flex-column.gap-3 {
+  gap: 1.8rem !important; 
+}
+
+.flex.flex-column.gap-1 {
+  gap: 0.6rem !important; 
+}
+
 
 label {
+  color: #880e4f;
   font-weight: 600;
+  font-size: 1rem;
+  margin-left: 5px;
 }
 
+/* Inputs y Passwords */
+::ng-deep .p-inputtext, 
+::ng-deep .p-password input {
+  width: 100%;
+  padding: 1rem 1.2rem !important;
+  border-radius: 12px !important;
+  border: 2px solid #f8bbd0 !important;
+  background: #fffafa !important;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+/* Focus en Inputs */
+::ng-deep .p-inputtext:enabled:focus, 
+::ng-deep .p-password input:enabled:focus {
+  border-color: #f06292 !important;
+  box-shadow: 0 0 0 0.25rem rgba(240, 98, 146, 0.15) !important;
+  background: #ffffff !important;
+}
+
+/* Errores */
 .p-error {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
+  color: #d32f2f;
+  margin-top: 4px;
+  margin-left: 10px;
+  font-weight: 500;
+}
+
+/* --- BOTÓN DE REGISTRO --- */
+::ng-deep .p-button.p-button-success {
+  background: #ec407a !important; 
+  border: none !important;
+  padding: 1.2rem !important;
+  border-radius: 12px !important;
+  font-weight: 700;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 14px rgba(236, 64, 122, 0.4) !important;
+  transition: all 0.3s ease !important;
+}
+
+::ng-deep .p-button.p-button-success:enabled:hover {
+  background: #d81b60 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(216, 27, 96, 0.5) !important;
+}
+
+
+::ng-deep .p-password {
+  width: 100%;
+}
+
+::ng-deep .p-password-panel {
+  border-radius: 12px;
+  background: #ffffff;
 }

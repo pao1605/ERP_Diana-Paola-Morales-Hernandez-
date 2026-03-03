@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { MenuModule } from 'primeng/menu'; // Asegúrate de importar esto
+import { MenuModule } from 'primeng/menu';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,12 +11,34 @@ import { MenuModule } from 'primeng/menu'; // Asegúrate de importar esto
 })
 export class SidebarComponent implements OnInit {
   items: MenuItem[] | undefined;
+  
+  appVersion: string = 'v1.0.0';
 
   ngOnInit() {
     this.items = [
-      { label: 'Inicio', icon: 'pi pi-home', routerLink: '/home' },
-      { label: 'Usuarios', icon: 'pi pi-users' },
-      { label: 'Salir', icon: 'pi pi-sign-out', routerLink: '/login' }
+      { 
+        label: 'Home', 
+        icon: 'pi pi-home', 
+        routerLink: '/home' 
+      },
+      { 
+        label: 'Grupos', 
+        icon: 'pi pi-users', 
+        routerLink: '/group' 
+      },
+      { 
+        label: 'Usuarios', 
+        icon: 'pi pi-user', 
+        routerLink: '/user' 
+      },
+      { 
+        separator: true 
+      },
+      { 
+        label: 'Salir', 
+        icon: 'pi pi-sign-out', 
+        routerLink: '/login' 
+      }
     ];
   }
 }

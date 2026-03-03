@@ -1,16 +1,19 @@
-<div class="sidebar-container">
-  <div class="sidebar-brand">
-    <div class="logo-box">
-      <i class="pi pi-bolt"></i>
+<div class="sidebar-wrapper">
+  <div class="brand-section">
+    <div class="logo-circle">
+      <i class="pi pi-heart-fill"></i>
     </div>
-    <span class="brand-name">System PAO </span>
+    <span class="brand-text">PAO SYSTEM</span>
   </div>
 
-  <p-menu [model]="items" styleClass="custom-sidebar-menu"></p-menu>
-  
-  <div class="sidebar-footer">
-    <div class="user-profile">
-      <i class="pi pi-user-circle"></i>
+  <div class="menu-section">
+    <p-menu [model]="items" styleClass="elegant-menu"></p-menu>
+  </div>
+
+  <div class="footer-section">
+    
+    <div class="version-tag">
+      <span>{{ appVersion }}</span>
     </div>
   </div>
 </div>
