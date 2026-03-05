@@ -50,7 +50,7 @@ label {
   margin-left: 5px;
 }
 
-/* Inputs y Passwords */
+
 ::ng-deep .p-inputtext, 
 ::ng-deep .p-password input {
   width: 100%;
@@ -62,7 +62,7 @@ label {
   transition: all 0.3s ease;
 }
 
-/* Focus en Inputs */
+
 ::ng-deep .p-inputtext:enabled:focus, 
 ::ng-deep .p-password input:enabled:focus {
   border-color: #f06292 !important;
@@ -70,7 +70,7 @@ label {
   background: #ffffff !important;
 }
 
-/* Errores */
+
 .p-error {
   font-size: 0.85rem;
   color: #d32f2f;
@@ -79,7 +79,7 @@ label {
   font-weight: 500;
 }
 
-/* --- BOTÓN DE REGISTRO --- */
+
 ::ng-deep .p-button.p-button-success {
   background: #ec407a !important; 
   border: none !important;

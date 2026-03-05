@@ -10,7 +10,7 @@
     margin-bottom: 2rem; 
   }
 
-  /* RECTÁNGULO SUPERIOR */
+  
   .summary-banner {
     background: linear-gradient(90deg, #ec4899 0%, #db2777 100%);
     border-radius: 24px;
@@ -46,7 +46,7 @@
     }
   }
 
-  /* SECCIÓN ADVANCES (ABAJO) */
+  
   .advances-container {
     .section-title {
       color: #500724;
@@ -68,29 +68,80 @@
       }
     }
 
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
-  }
-
-  ::ng-deep .custom-card {
-    .p-card {
-      border-radius: 20px;
-      border: 1px solid #fce7f3;
-      background: #fff;
-      transition: all 0.3s ease;
+    
+    ::ng-deep {
+      .p-button.p-button-text.p-button-info {
+        color: #3b82f6; 
+      }
+      .p-button.p-button-text.p-button-danger {
+        color: #ef4444; 
+      }
       
-      &:hover {
-        border-color: #f472b6;
-        box-shadow: 0 10px 20px rgba(236, 72, 153, 0.05);
-      }
+      .p-datatable {
+        .p-datatable-thead > tr > th {
+          background-color: #fff5f8;
+          color: #831843;
+          font-weight: 700;
+        }
 
-      .p-card-title {
-        color: #db2777;
-        font-weight: 700;
+        .p-datatable-tbody > tr {
+          transition: background-color 0.2s;
+          &:hover {
+            background-color: #fff1f7; 
+          }
+        }
       }
     }
   }
+
+  
+  ::ng-deep .p-dialog {
+    border-radius: 15px;
+    overflow: hidden;
+
+    .p-dialog-header {
+      background: #ffffff;
+      color: #442a5c; 
+      font-weight: 700;
+    }
+
+    .p-dialog-content {
+      padding: 1.5rem;
+    }
+
+    .field {
+      label {
+        color: #442a5c;
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+      input, textarea, select {
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        &:focus {
+          border-color: #db2777;
+          box-shadow: 0 0 0 0.2rem rgba(219, 39, 119, 0.25);
+        }
+      }
+    }
+
+    .p-dialog-footer {
+      button.p-button-success {
+        background-color: #10b981; 
+        border: none;
+      }
+    }
+  }
+}
+
+
+
+::ng-deep .p-datatable-tbody {
+  .pi {
+    font-size: 1.2rem !important;
+    display: block !important;
+  }
+  
+  .p-button-info .pi { color: #3b82f6 !important; }   
+  .p-button-danger .pi { color: #ef4444 !important; } 
 }

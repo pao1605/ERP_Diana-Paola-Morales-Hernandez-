@@ -3,7 +3,7 @@
   justify-content: center;
   padding: 3rem 2rem;
   background-color: #fff9fb;
-  min-height: 100%;
+  min-height: 100vh;
 
   .profile-card {
     width: 100%;
@@ -86,17 +86,77 @@
   .profile-actions {
     display: flex;
     justify-content: center;
+    gap: 1.5rem; 
     border-top: 1px solid #fce7f3;
     padding-top: 2rem;
     
-    ::ng-deep .p-button {
-      background: white;
-      color: #ec4899;
-      border-color: #ec4899;
-      &:hover {
-        background: #ec4899;
-        color: white;
+    ::ng-deep {
+      .p-button {
+        background: white;
+        color: #ec4899;
+        border-color: #ec4899;
+        font-weight: 700;
+        &:hover {
+          background: #ec4899;
+          color: white;
+        }
       }
+      
+      
+      .p-button-danger {
+        color: #be185d !important;
+        border-color: transparent !important;
+        &:hover {
+          background: #fff1f2 !important;
+          color: #9f1239 !important;
+        }
+      }
+    }
+  }
+}
+
+
+::ng-deep .p-dialog {
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(236, 72, 153, 0.25);
+  
+  .p-dialog-header {
+    background: #fff9fb;
+    color: #831843;
+    border-radius: 20px 20px 0 0;
+    font-weight: 800;
+  }
+
+  .p-dialog-content {
+    padding: 2rem;
+    
+    .edit-form {
+      .field {
+        margin-bottom: 1.2rem;
+        label {
+          color: #be185d;
+          font-weight: 600;
+          font-size: 0.9rem;
+        }
+        input {
+          margin-top: 0.4rem;
+          border-radius: 10px;
+          border: 1px solid #fce7f3;
+          &:focus {
+            border-color: #f472b6;
+            box-shadow: 0 0 0 0.2rem rgba(244, 114, 182, 0.25);
+          }
+        }
+      }
+    }
+  }
+
+  .p-dialog-footer {
+    border-radius: 0 0 20px 20px;
+    padding: 1.5rem;
+    
+    .p-button-text {
+      color: #64748b;
     }
   }
 }
