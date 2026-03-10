@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router'; 
 
 @Component({
-  selector: 'app-user',
+  selector: 'app-user', // 1. CAMBIADO: Antes decía 'app-user'
   standalone: true,
   imports: [
     CommonModule, 
@@ -20,7 +20,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./user.scss']
 })
 export class UserComponent {
-  
+  // Datos personales de Pao
   usuario: string = 'Pao';
   nombreCompleto: string = 'Diana Paola Morales';
   email: string = 'pao@gmail.com';
@@ -42,17 +42,12 @@ export class UserComponent {
     console.log('Datos actualizados correctamente');
   }
 
-  
   eliminarPerfil() {
     if (confirm('¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.')) {
-      
       this.usuario = '';
       this.nombreCompleto = '';
       this.email = '';
-      
       console.log('Perfil eliminado');
-      
-      
       this.router.navigate(['/login']);
     }
   }

@@ -2,8 +2,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { FormBuilder, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { MessageService } from 'primeng/api';
 
+// AGREGA ESTA LÍNEA EXACTA en ambos archivos:
+import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';

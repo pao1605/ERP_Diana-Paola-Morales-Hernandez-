@@ -1,30 +1,83 @@
-<div class="home-container">
-  <h1 class="home-title">Dashboard</h1>
-  <p class="home-subtitle">Bienvenido !!</p>
+<div class="dashboard">
 
-  <div class="cards-grid">
-    <p-card class="stat-card">
-      <div class="stat-content">
-        <div class="stat-icon-box pink-bg">
-          <i class="pi pi-heart-fill"></i>
-        </div>
-        <div>
-          <span class="stat-label">Ventas Hoy</span>
-          <span class="stat-number">$2,450</span>
-        </div>
-      </div>
-    </p-card>
+<h1 class="dashboard-title">
+Dashboard de Tickets
+</h1>
 
-    <p-card class="stat-card">
-      <div class="stat-content">
-        <div class="stat-icon-box white-bg">
-          <i class="pi pi-star-fill"></i>
-        </div>
-        <div>
-          <span class="stat-label">Clientes</span>
-          <span class="stat-number">150</span>
-        </div>
-      </div>
-    </p-card>
-  </div>
+<!-- KPI -->
+
+<div class="stats-grid">
+
+<p-card class="stat-card total">
+<h3>Total</h3>
+<h1>{{totalTickets}}</h1>
+</p-card>
+
+<p-card class="stat-card pendiente">
+<h3>Pendientes</h3>
+<h1>{{pendientes}}</h1>
+</p-card>
+
+<p-card class="stat-card progreso">
+<h3>En progreso</h3>
+<h1>{{enProgreso}}</h1>
+</p-card>
+
+<p-card class="stat-card revision">
+<h3>Revisión</h3>
+<h1>{{revision}}</h1>
+</p-card>
+
+<p-card class="stat-card finalizado">
+<h3>Finalizados</h3>
+<h1>{{finalizados}}</h1>
+</p-card>
+
+</div>
+
+
+<!-- GRAFICA -->
+
+<div class="chart-container">
+
+<p-card>
+
+<h3>Tickets por estado</h3>
+
+<p-chart
+type="doughnut"
+[data]="chartData">
+</p-chart>
+
+</p-card>
+
+</div>
+
+
+<!-- LISTA -->
+
+<h2 class="mt-5">
+Tickets recientes
+</h2>
+
+<div class="ticket-list">
+
+<div *ngFor="let t of tickets" class="ticket-item">
+
+<div>
+
+<h4>{{t.titulo}}</h4>
+
+<small>
+Asignado a {{t.asignadoA}}
+</small>
+
+</div>
+
+<p-tag [value]="t.estado"></p-tag>
+
+</div>
+
+</div>
+
 </div>

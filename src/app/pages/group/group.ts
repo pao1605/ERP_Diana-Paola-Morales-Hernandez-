@@ -1,15 +1,32 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-
-import { CardModule } from 'primeng/card';
+import { TicketService } from '../../services/ticket';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
 import { DialogModule } from 'primeng/dialog';
+import { TagModule } from 'primeng/tag';
+import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
-import { TextareaModule } from 'primeng/textarea'; 
+import { TooltipModule } from 'primeng/tooltip';
+
+interface Miembro {
+  nombre: string;
+  email: string;
+  rol: string;
+}
+
+interface Ticket {
+  titulo: string;
+  descripcion: string;
+  estado: string;
+  asignadoA: string;
+  prioridad: string;
+  fechaCreacion: Date;
+  fechaLimite: Date;
+  comentarios: string;
+  historial: string;
+}
 
 interface Grupo {
   id?: number;
@@ -20,85 +37,298 @@ interface Grupo {
   tickets: number;
   descripcion: string;
   estado: string;
+  miembros: Miembro[];
+  ticketsList: Ticket[];
 }
 
 @Component({
   selector: 'app-group',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     FormsModule,
-    CardModule, 
-    TableModule, 
-    ButtonModule, 
-    TagModule, 
+    TableModule,
+    ButtonModule,
     DialogModule,
+    TagModule,
+    CardModule,
     InputTextModule,
-    TextareaModule
+    TooltipModule
   ],
   templateUrl: './group.html',
   styleUrls: ['./group.scss']
 })
 export class GroupComponent implements OnInit {
-  totalN: number = 0; 
-  mostrarDialogo: boolean = false; 
-  grupoSeleccionado: any = {}; 
+  constructor(private ticketService: TicketService) {}
 
+  vistaActual: 'grupos' | 'tickets' = 'grupos';
+
+  mostrarDialogo = false;
+  mostrarDialogoTicket = false;
+
+  esNuevoGrupo = false;
+  mostrarSeccionMiembros = false;
  
-  grupos: Grupo[] = [
-    { id: 1, nombre: 'Desarrolladores Alpha', nivel: 'Avanzado', autor: 'Diana Morales', integrantes: 12, tickets: 4, descripcion: 'Equipo de desarrollo senior', estado: 'Activo' },
-    { id: 2, nombre: 'Diseño UI', nivel: 'Intermedio', autor: 'Pao Morales', integrantes: 6, tickets: 2, descripcion: 'Especialistas en interfaces', estado: 'Inactivo' }
-  ];
-
-  ngOnInit() {
-    this.actualizarTotal();
-  }
-
-  actualizarTotal() {
-    this.totalN = this.grupos.length; 
-  }
-
+  filtroEstado = 'todos';
   
 
-  abrirNuevo() {
-    this.grupoSeleccionado = { nombre: '', nivel: '', autor: '', integrantes: 0, tickets: 0, descripcion: '', estado: 'Activo' };
-    this.mostrarDialogo = true;
-  }
+  estadosKanban = [
+    'Pendiente',
+    'En progreso',
+    'Revisión',
+    'Finalizado'
+  ];
 
-  editarGrupo(grupo: Grupo) {
-    this.grupoSeleccionado = { ...grupo };
-    this.mostrarDialogo = true;
-  }
+  grupoSeleccionado: Grupo | null = null;
 
-  eliminarGrupo(id: number) {
-    
-    if (confirm('¿Estás seguro de que deseas eliminar este grupo?')) {
-      this.grupos = this.grupos.filter(g => g.id !== id);
-      this.actualizarTotal();
+  ticketSeleccionado: Ticket = {
+    titulo: '',
+    descripcion: '',
+    estado: 'Pendiente',
+    asignadoA: '',
+    prioridad: 'Media',
+    fechaCreacion: new Date(),
+    fechaLimite: new Date(),
+    comentarios: '',
+    historial: ''
+  };
+
+  grupos: Grupo[] = [
+    {
+      id: 1,
+      nombre: 'Frontend Team',
+      nivel: 'Avanzado',
+      autor: 'Gael',
+      integrantes: 1,
+      tickets: 1,
+      descripcion: 'Equipo visual',
+      estado: 'Activo',
+      miembros: [
+        { nombre: 'Gael', email: 'gael@email.com', rol: 'Líder' }
+      ],
+      ticketsList: [
+        {
+          titulo: 'Error login',
+          descripcion: 'No carga el formulario',
+          estado: 'Pendiente',
+          asignadoA: 'Gael',
+          prioridad: 'Alta',
+          fechaCreacion: new Date(),
+          fechaLimite: new Date(),
+          comentarios: '',
+          historial: ''
+        }
+      ]
     }
+    
+    
+  ];
+
+  ngOnInit() {}
+
+  gestionarMiembros(grupo: Grupo) {
+    this.grupoSeleccionado = { ...grupo };
+    this.mostrarSeccionMiembros = true;
+  }
+
+  editarGrupo(grupo?: Grupo) {
+
+    if (grupo) {
+
+      this.esNuevoGrupo = false;
+      this.grupoSeleccionado = { ...grupo };
+
+    } else {
+
+      this.esNuevoGrupo = true;
+
+      this.grupoSeleccionado = {
+        nombre: '',
+        nivel: '',
+        autor: '',
+        integrantes: 0,
+        tickets: 0,
+        descripcion: '',
+        estado: 'Activo',
+        miembros: [],
+        ticketsList: []
+      };
+
+    }
+
+    this.mostrarDialogo = true;
+
+  }
+
+  agregarMiembro() {
+
+    if (!this.grupoSeleccionado) return;
+
+    const ultimo =
+      this.grupoSeleccionado.miembros[
+        this.grupoSeleccionado.miembros.length - 1
+      ];
+
+    if (ultimo && (!ultimo.nombre || !ultimo.email || !ultimo.rol)) {
+      alert('Completa el miembro actual antes de agregar otro');
+      return;
+    }
+
+    this.grupoSeleccionado.miembros.push({
+      nombre: '',
+      email: '',
+      rol: ''
+    });
+
+    this.actualizarContadores();
+
+  }
+
+  eliminarMiembro(index: number) {
+
+    this.grupoSeleccionado?.miembros.splice(index, 1);
+
+    this.actualizarContadores();
+
+  }
+
+  actualizarContadores() {
+
+    if (!this.grupoSeleccionado) return;
+
+    this.grupoSeleccionado.integrantes =
+      this.grupoSeleccionado.miembros.length;
+
+    this.grupoSeleccionado.tickets =
+      this.grupoSeleccionado.ticketsList.length;
+
+    const index =
+      this.grupos.findIndex(
+        g => g.id === this.grupoSeleccionado?.id
+      );
+
+    if (index !== -1) {
+
+      this.grupos[index].integrantes =
+        this.grupoSeleccionado.integrantes;
+
+      this.grupos[index].tickets =
+        this.grupoSeleccionado.tickets;
+
+    }
+
   }
 
   guardarGrupo() {
-    if (this.grupoSeleccionado.id) {
-      
-      const index = this.grupos.findIndex(g => g.id === this.grupoSeleccionado.id);
-      this.grupos[index] = this.grupoSeleccionado;
-    } else {
-      
+
+    if (!this.grupoSeleccionado) return;
+
+    if (this.esNuevoGrupo) {
+
       this.grupoSeleccionado.id = Date.now();
-      this.grupos.push(this.grupoSeleccionado);
+
+      this.grupos = [
+        ...this.grupos,
+        this.grupoSeleccionado
+      ];
+
+    } else {
+
+      const index =
+        this.grupos.findIndex(
+          g => g.id === this.grupoSeleccionado?.id
+        );
+
+      if (index !== -1) {
+        this.grupos[index] = { ...this.grupoSeleccionado };
+      }
+
     }
+
     this.mostrarDialogo = false;
-    this.actualizarTotal();
+
   }
 
-  
-  getSeverity(estado: string): "success" | "info" | "warn" | "danger" | "secondary" | "contrast" | null | undefined {
-    switch (estado) {
-      case 'Activo': return 'success';
-      case 'Inactivo': return 'info';
-    
-      default: return 'warn';
+  eliminarGrupo(id: number) {
+
+    this.grupos = this.grupos.filter(
+      g => g.id !== id
+    );
+
+    if (this.grupoSeleccionado?.id === id) {
+      this.mostrarSeccionMiembros = false;
     }
+
   }
+
+  abrirFormularioTicket(grupo: Grupo) {
+
+    this.grupoSeleccionado = grupo;
+
+    this.ticketSeleccionado = {
+      titulo: '',
+      descripcion: '',
+      estado: 'Pendiente',
+      asignadoA: '',
+      prioridad: 'Media',
+      fechaCreacion: new Date(),
+      fechaLimite: new Date(),
+      comentarios: '',
+      historial: ''
+    };
+
+    this.mostrarDialogoTicket = true;
+
+  }
+
+  guardarTicket() {
+
+    if (!this.grupoSeleccionado) return;
+
+    this.ticketSeleccionado.historial =
+      'Ticket creado el ' +
+      new Date().toLocaleDateString();
+
+    this.grupoSeleccionado.ticketsList.push(
+      this.ticketSeleccionado
+    ); 
+    
+
+    this.actualizarContadores();
+
+    this.mostrarDialogoTicket = false;
+
+  }
+
+  obtenerTicketsPorEstado(estado: string) {
+
+    if (!this.grupoSeleccionado) return [];
+
+    return this.grupoSeleccionado.ticketsList.filter(
+      t => t.estado === estado
+    );
+
+  }
+
+  moverTicket(ticket: Ticket, nuevoEstado: string) {
+
+    ticket.estado = nuevoEstado;
+
+    ticket.historial =
+      ticket.historial +
+      '\nMovido a ' +
+      nuevoEstado +
+      ' el ' +
+      new Date().toLocaleDateString();
+
+  }
+
+  verTicketsGrupo(grupo: Grupo) {
+
+   this.grupoSeleccionado = grupo;
+
+   this.vistaActual = 'tickets';
+
+  }
+
 }

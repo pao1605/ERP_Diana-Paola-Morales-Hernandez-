@@ -1,147 +1,234 @@
-.group-container {
-  padding: 2.5rem;
-  background-color: #ffffff;
-  min-height: 100vh;
+/* ========================= */
+/* CONTENEDOR GENERAL */
+/* ========================= */
 
-  .title { 
-    color: #831843; 
-    font-weight: 850; 
-    font-size: 2.4rem; 
-    margin-bottom: 2rem; 
-  }
-
-  
-  .summary-banner {
-    background: linear-gradient(90deg, #ec4899 0%, #db2777 100%);
-    border-radius: 24px;
-    padding: 2.5rem 3rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: white;
-    margin-bottom: 3rem;
-    box-shadow: 0 12px 25px rgba(236, 72, 153, 0.2);
-
-    .banner-content {
-      display: flex;
-      flex-direction: column;
-      .banner-label {
-        font-size: 1.1rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        opacity: 0.9;
-      }
-      .banner-number {
-        font-size: 4rem;
-        font-weight: 900;
-        line-height: 1;
-        margin-top: 0.5rem;
-      }
-    }
-
-    .banner-icon {
-      font-size: 3.5rem;
-      opacity: 0.3;
-    }
-  }
-
-  
-  .advances-container {
-    .section-title {
-      color: #500724;
-      font-size: 1.6rem;
-      font-weight: 800;
-      margin-bottom: 1.5rem;
-      position: relative;
-      padding-left: 15px;
-
-      &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 20%;
-        height: 60%;
-        width: 5px;
-        background-color: #f472b6;
-        border-radius: 10px;
-      }
-    }
-
-    
-    ::ng-deep {
-      .p-button.p-button-text.p-button-info {
-        color: #3b82f6; 
-      }
-      .p-button.p-button-text.p-button-danger {
-        color: #ef4444; 
-      }
-      
-      .p-datatable {
-        .p-datatable-thead > tr > th {
-          background-color: #fff5f8;
-          color: #831843;
-          font-weight: 700;
-        }
-
-        .p-datatable-tbody > tr {
-          transition: background-color 0.2s;
-          &:hover {
-            background-color: #fff1f7; 
-          }
-        }
-      }
-    }
-  }
-
-  
-  ::ng-deep .p-dialog {
-    border-radius: 15px;
-    overflow: hidden;
-
-    .p-dialog-header {
-      background: #ffffff;
-      color: #442a5c; 
-      font-weight: 700;
-    }
-
-    .p-dialog-content {
-      padding: 1.5rem;
-    }
-
-    .field {
-      label {
-        color: #442a5c;
-        display: block;
-        margin-bottom: 0.5rem;
-      }
-      input, textarea, select {
-        border: 1px solid #ced4da;
-        border-radius: 6px;
-        &:focus {
-          border-color: #db2777;
-          box-shadow: 0 0 0 0.2rem rgba(219, 39, 119, 0.25);
-        }
-      }
-    }
-
-    .p-dialog-footer {
-      button.p-button-success {
-        background-color: #10b981; 
-        border: none;
-      }
-    }
-  }
+.group-container{
+padding:20px;
 }
 
 
+/* ========================= */
+/* TITULO */
+/* ========================= */
 
-::ng-deep .p-datatable-tbody {
-  .pi {
-    font-size: 1.2rem !important;
-    display: block !important;
-  }
-  
-  .p-button-info .pi { color: #3b82f6 !important; }   
-  .p-button-danger .pi { color: #ef4444 !important; } 
+.title{
+font-size:28px;
+font-weight:700;
+color:#e91e63;
+margin-bottom:20px;
+border-left:4px solid #e91e63;
+padding-left:10px;
+}
+
+
+/* ========================= */
+/* HEADER ACCIONES */
+/* ========================= */
+
+.header-actions{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+
+/* ========================= */
+/* TABLA GRUPOS */
+/* ========================= */
+
+.table-card{
+border-radius:10px;
+padding:10px;
+}
+
+.p-table{
+font-size:14px;
+}
+
+
+/* ========================= */
+/* SECCION MIEMBROS */
+/* ========================= */
+
+.members-section{
+margin-top:30px;
+background:white;
+border-radius:10px;
+padding:20px;
+}
+
+
+/* ========================= */
+/* INPUTS */
+/* ========================= */
+
+input{
+width:100%;
+}
+
+textarea{
+width:100%;
+min-height:70px;
+}
+
+
+/* ========================= */
+/* KANBAN */
+/* ========================= */
+
+.kanban-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+margin-top:20px;
+}
+
+.kanban-column{
+background:#f4f6f8;
+padding:15px;
+border-radius:10px;
+min-height:400px;
+}
+
+.kanban-column h3{
+text-align:center;
+font-weight:600;
+margin-bottom:10px;
+}
+
+
+/* ========================= */
+/* TARJETAS TICKET */
+/* ========================= */
+
+.kanban-card{
+background:white;
+padding:12px;
+border-radius:8px;
+margin-bottom:10px;
+box-shadow:0 3px 6px rgba(0,0,0,0.1);
+transition:all 0.2s;
+}
+
+.kanban-card:hover{
+transform:translateY(-2px);
+box-shadow:0 6px 12px rgba(0,0,0,0.15);
+}
+
+.kanban-card h4{
+margin:0;
+font-size:16px;
+}
+
+.kanban-card p{
+font-size:13px;
+margin:5px 0;
+}
+
+.kanban-card small{
+color:#777;
+}
+
+
+/* ========================= */
+/* INFO TICKET */
+/* ========================= */
+
+.kanban-info{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:5px;
+}
+
+
+/* ========================= */
+/* BOTONES TICKET */
+/* ========================= */
+
+.kanban-card button{
+margin-top:6px;
+}
+
+
+/* ========================= */
+/* TAGS */
+/* ========================= */
+
+.p-tag{
+font-size:12px;
+}
+
+
+/* ========================= */
+/* DIALOG CREAR TICKET */
+/* ========================= */
+
+.ticket-dialog{
+border-radius:12px;
+}
+
+.ticket-title{
+font-size:20px;
+font-weight:600;
+margin-bottom:20px;
+}
+
+.ticket-form .field{
+margin-bottom:16px;
+display:flex;
+flex-direction:column;
+}
+
+.ticket-form label{
+font-weight:500;
+margin-bottom:6px;
+color:#555;
+}
+
+.ticket-form input,
+.ticket-form textarea,
+.ticket-form select{
+padding:8px;
+border-radius:6px;
+border:1px solid #dcdcdc;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:16px;
+}
+
+.ticket-actions{
+margin-top:20px;
+display:flex;
+justify-content:flex-end;
+gap:10px;
+}
+
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+@media (max-width:1200px){
+
+.kanban-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+@media (max-width:700px){
+
+.kanban-grid{
+grid-template-columns:1fr;
+}
+
+.grid{
+grid-template-columns:1fr;
+}
+
 }

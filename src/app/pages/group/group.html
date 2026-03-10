@@ -1,110 +1,540 @@
 <div class="group-container">
-  <header class="page-header">
-    <h1 class="title">Gestión de Grupos</h1>
-  </header>
 
-  <div class="summary-banner">
-    <div class="banner-content">
-      <span class="banner-label">TOTAL N</span>
-      <span class="banner-number">{{ totalN }}</span>
-    </div>
-    <div class="banner-icon">
-      <i class="pi pi-users"></i>
-    </div>
-  </div>
+<h1 class="title">Gestión de Grupos</h1>
 
-  <div class="advances-container">
-    <div class="flex justify-content-between align-items-center mb-4">
-      <h2 class="section-title">Avances</h2>
-      <p-button label="Nuevo Grupo" icon="pi pi-plus" 
-                styleClass="p-button-success p-button-rounded" 
-                (onClick)="abrirNuevo()"></p-button>
-    </div>
+<div class="header-actions mb-5">
 
-    <p-card class="table-card shadow-2">
-      <p-table [value]="grupos" [rows]="5" [paginator]="true" responsiveLayout="scroll">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>Nombre</th>
-            <th>Nivel</th>
-            <th>Autor</th>
-            <th>Integrantes</th>
-            <th>Tickets</th>
-            <th>Estado</th>
-            <th style="width: 120px" class="text-center">Acciones</th>
-          </tr>
-        </ng-template>
-        
-        <ng-template pTemplate="body" let-grupo>
-          <tr>
-            <td class="font-bold">{{ grupo.nombre }}</td>
-            <td>{{ grupo.nivel }}</td>
-            <td>{{ grupo.autor }}</td>
-            <td>{{ grupo.integrantes }}</td>
-            <td><p-tag [value]="grupo.tickets" severity="warn"></p-tag></td>
-            <td><p-tag [severity]="getSeverity(grupo.estado)" [value]="grupo.estado"></p-tag></td>
-            <td>
-              <div class="flex justify-content-center gap-2">
-                <button pButton 
-                        type="button" 
-                        icon="pi pi-pencil" 
-                        class="p-button-rounded p-button-info p-button-text" 
-                        (click)="editarGrupo(grupo)">
-                       <i class="pi pi-pencil"></i> 
-                </button>
-                
-                <button pButton 
-                        type="button" 
-                        icon="pi pi-trash" 
-                        class="p-button-rounded p-button-danger p-button-text" 
-                        (click)="eliminarGrupo(grupo.id)">
-                       <i class="pi pi-trash"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table> </p-card>
-  </div>
+<div class="flex gap-2">
+
+<p-button label="Grupos"
+[outlined]="vistaActual !== 'grupos'"
+(onClick)="vistaActual = 'grupos'">
+</p-button>
+
+<p-button label="Tickets"
+[outlined]="vistaActual !== 'tickets'"
+(onClick)="vistaActual = 'tickets'">
+</p-button>
+
 </div>
 
-<p-dialog [(visible)]="mostrarDialogo" 
-          [header]="grupoSeleccionado.id ? 'Editar Información del Grupo' : 'Registrar Nuevo Grupo'" 
-          [modal]="true" 
-          [style]="{width: '450px'}" 
-          styleClass="p-fluid">
-    <ng-template pTemplate="content">
-        <div class="field mb-3">
-            <label class="font-bold block mb-1">Nombre del Grupo</label>
-            <input type="text" pInputText [(ngModel)]="grupoSeleccionado.nombre" placeholder="Ej. Desarrolladores Alpha" />
-        </div>
-        <div class="field mb-3">
-            <label class="font-bold block mb-1">Nivel</label>
-            <input type="text" pInputText [(ngModel)]="grupoSeleccionado.nivel" placeholder="Ej. Avanzado" />
-        </div>
-        <div class="field mb-3">
-            <label class="font-bold block mb-1">Autor</label>
-            <input type="text" pInputText [(ngModel)]="grupoSeleccionado.autor" />
-        </div>
-        <div class="field mb-3">
-            <label class="font-bold block mb-1">Descripción</label>
-            <textarea pTextarea [(ngModel)]="grupoSeleccionado.descripcion" rows="3"></textarea>
-        </div>
-        <div class="field mb-3">
-            <label class="font-bold block mb-1">Estado</label>
-            <select [(ngModel)]="grupoSeleccionado.estado" class="p-inputtext">
-                <option value="Activo">Activo</option>
-                <option value="Inactivo">Inactivo</option>
-               
-            </select>
-        </div>
-    </ng-template>
+<p-button label="Nuevo Grupo"
+icon="pi pi-plus"
+styleClass="p-button-success mt-4"
+(onClick)="editarGrupo()">
+</p-button>
 
-    <ng-template pTemplate="footer">
-        <p-button label="Cancelar" icon="pi pi-times" 
-                  styleClass="p-button-text p-button-secondary" 
-                  (onClick)="mostrarDialogo = false"></p-button>
-        <p-button label="Guardar Cambios" icon="pi pi-check" 
-                  (onClick)="guardarGrupo()"></p-button>
-    </ng-template>
+</div>
+
+<!-- ========================= -->
+<!-- TABLA DE GRUPOS -->
+<!-- ========================= -->
+
+<div *ngIf="vistaActual === 'grupos'">
+
+<p-card class="table-card shadow-2">
+
+<p-table [value]="grupos">
+
+<ng-template pTemplate="header">
+<tr>
+<th>Nombre</th>
+<th>Nivel</th>
+<th>Autor</th>
+<th>Integrantes</th>
+<th>Tickets</th>
+<th>Acciones</th>
+</tr>
+</ng-template>
+
+<ng-template pTemplate="body" let-grupo>
+
+<tr>
+
+<td>{{grupo.nombre}}</td>
+<td>{{grupo.nivel}}</td>
+<td>{{grupo.autor}}</td>
+
+<td>
+
+<div class="flex align-items-center gap-2">
+
+{{grupo.miembros.length}}
+
+<button pButton
+icon="pi pi-user-plus"
+class="p-button-rounded p-button-text p-button-sm p-button-info"
+pTooltip="Gestionar Miembros"
+(click)="gestionarMiembros(grupo)">
+</button>
+
+</div>
+
+</td>
+
+<td>
+<p-tag [value]="grupo.tickets"></p-tag>
+</td>
+
+<td class="flex gap-2">
+
+<button pButton
+icon="pi pi-pencil"
+class="p-button-text p-button-info"
+(click)="editarGrupo(grupo)">
+</button>
+
+<button pButton
+icon="pi pi-trash"
+class="p-button-text p-button-danger"
+(click)="eliminarGrupo(grupo.id)">
+</button>
+
+<button pButton
+icon="pi pi-ticket"
+class="p-button-text p-button-warning"
+pTooltip="Crear Ticket"
+(click)="abrirFormularioTicket(grupo)">
+</button>
+
+<button pButton
+icon="pi pi-eye"
+class="p-button-text p-button-success"
+pTooltip="Ver tickets"
+(click)="verTicketsGrupo(grupo)">
+</button>
+
+</td>
+
+</tr>
+
+</ng-template>
+
+</p-table>
+
+</p-card>
+
+
+<!-- ========================= -->
+<!-- CRUD MIEMBROS -->
+<!-- ========================= -->
+
+<div *ngIf="mostrarSeccionMiembros && grupoSeleccionado"
+class="mt-6 p-5 border-round surface-card shadow-3">
+
+<div class="flex justify-content-between align-items-center mb-4">
+
+<div>
+
+<h2>
+Miembros del grupo: {{grupoSeleccionado!.nombre}}
+</h2>
+
+<small>
+Integrantes: {{grupoSeleccionado!.miembros.length}}
+</small>
+
+</div>
+
+<div class="flex gap-2">
+
+<p-button label="Agregar Miembro"
+icon="pi pi-plus"
+styleClass="p-button-success"
+(onClick)="agregarMiembro()">
+</p-button>
+
+<button pButton
+icon="pi pi-times"
+class="p-button-text"
+(click)="mostrarSeccionMiembros=false">
+</button>
+
+</div>
+
+</div>
+
+<p-table [value]="grupoSeleccionado!.miembros">
+
+<ng-template pTemplate="header">
+
+<tr>
+<th>Nombre</th>
+<th>Email</th>
+<th>Rol</th>
+<th></th>
+</tr>
+
+</ng-template>
+
+<ng-template pTemplate="body" let-miembro let-i="rowIndex">
+
+<tr>
+
+<td>
+<input pInputText [(ngModel)]="miembro.nombre">
+</td>
+
+<td>
+<input pInputText [(ngModel)]="miembro.email">
+</td>
+
+<td>
+<input pInputText [(ngModel)]="miembro.rol">
+</td>
+
+<td>
+
+<button pButton
+icon="pi pi-trash"
+class="p-button-text p-button-danger"
+(click)="eliminarMiembro(i)">
+</button>
+
+</td>
+
+</tr>
+
+</ng-template>
+
+</p-table>
+
+</div>
+
+</div>
+
+
+
+<!-- ========================= -->
+<!-- KANBAN TICKETS -->
+<!-- ========================= -->
+
+<div *ngIf="vistaActual === 'tickets' && grupoSeleccionado">
+
+<h2>
+Tickets del grupo: {{grupoSeleccionado.nombre}}
+</h2>
+
+<div class="kanban-grid">
+
+
+<!-- Pendiente -->
+
+<div class="kanban-column">
+
+<h3>Pendiente</h3>
+
+<div *ngFor="let ticket of obtenerTicketsPorEstado('Pendiente')" class="kanban-card">
+
+<h4>{{ticket.titulo}}</h4>
+
+<p>{{ticket.descripcion}}</p>
+
+<small>
+Asignado: {{ticket.asignadoA}}
+</small>
+
+<div class="kanban-info">
+
+<p-tag [value]="ticket.prioridad"></p-tag>
+
+<small>
+{{ticket.fechaCreacion | date:'shortDate'}}
+</small>
+
+</div>
+
+<button pButton
+icon="pi pi-arrow-right"
+class="p-button-text"
+(click)="moverTicket(ticket,'En progreso')">
+</button>
+
+</div>
+
+</div>
+
+
+<!-- En progreso -->
+
+<div class="kanban-column">
+
+<h3>En progreso</h3>
+
+<div *ngFor="let ticket of obtenerTicketsPorEstado('En progreso')" class="kanban-card">
+
+<h4>{{ticket.titulo}}</h4>
+
+<p>{{ticket.descripcion}}</p>
+
+<small>
+Asignado: {{ticket.asignadoA}}
+</small>
+
+<div class="kanban-info">
+
+<p-tag [value]="ticket.prioridad"></p-tag>
+
+<small>
+{{ticket.fechaCreacion | date:'shortDate'}}
+</small>
+
+</div>
+
+<button pButton
+icon="pi pi-arrow-left"
+class="p-button-text"
+(click)="moverTicket(ticket,'Pendiente')">
+</button>
+
+<button pButton
+icon="pi pi-arrow-right"
+class="p-button-text"
+(click)="moverTicket(ticket,'Revisión')">
+</button>
+
+
+
+</div>
+
+</div>
+
+
+<!-- Revision -->
+
+<div class="kanban-column">
+
+<h3>Revisión</h3>
+
+<div *ngFor="let ticket of obtenerTicketsPorEstado('Revisión')" class="kanban-card">
+
+<h4>{{ticket.titulo}}</h4>
+
+<p>{{ticket.descripcion}}</p>
+
+<small>
+Asignado: {{ticket.asignadoA}}
+</small>
+
+<div class="kanban-info">
+
+<p-tag [value]="ticket.prioridad"></p-tag>
+
+<small>
+{{ticket.fechaCreacion | date:'shortDate'}}
+</small>
+
+</div>
+
+<button pButton
+icon="pi pi-arrow-left"
+class="p-button-text"
+(click)="moverTicket(ticket,'En progreso')">
+</button>
+
+<button pButton
+icon="pi pi-arrow-right"
+class="p-button-text"
+(click)="moverTicket(ticket,'Finalizado')">
+</button>
+
+</div>
+
+</div>
+
+
+<!-- Finalizado -->
+
+<div class="kanban-column">
+
+<h3>Finalizado</h3>
+
+<div *ngFor="let ticket of obtenerTicketsPorEstado('Finalizado')" class="kanban-card">
+
+<h4>{{ticket.titulo}}</h4>
+
+<p>{{ticket.descripcion}}</p>
+
+<small>
+Asignado: {{ticket.asignadoA}}
+</small>
+
+<div class="kanban-info">
+
+<p-tag [value]="ticket.prioridad"></p-tag>
+
+<small>
+{{ticket.fechaCreacion | date:'shortDate'}}
+</small>
+
+</div>
+
+<button pButton
+icon="pi pi-arrow-left"
+class="p-button-text"
+(click)="moverTicket(ticket,'Revisión')">
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- ========================= -->
+<!-- DIALOG GRUPO -->
+<!-- ========================= -->
+
+<p-dialog [(visible)]="mostrarDialogo"
+[modal]="true"
+[style]="{width:'450px'}">
+
+<h3>{{esNuevoGrupo ? 'Nuevo Grupo' : 'Editar Grupo'}}</h3>
+
+<div *ngIf="grupoSeleccionado">
+
+<div class="field mb-3">
+
+<label>Nombre</label>
+<input pInputText [(ngModel)]="grupoSeleccionado.nombre">
+
+</div>
+
+<div class="field mb-3">
+
+<label>Nivel</label>
+<input pInputText [(ngModel)]="grupoSeleccionado.nivel">
+
+</div>
+
+<div class="field mb-3">
+
+<label>Autor</label>
+<input pInputText [(ngModel)]="grupoSeleccionado.autor">
+
+</div>
+
+</div>
+
+<div class="flex justify-content-end gap-2 mt-3">
+
+<p-button label="Cancelar"
+class="p-button-text"
+(onClick)="mostrarDialogo=false">
+</p-button>
+
+<p-button label="Guardar"
+(onClick)="guardarGrupo()">
+</p-button>
+
+</div>
+
+</p-dialog>
+
+
+
+<!-- ========================= -->
+<!-- DIALOG CREAR TICKET -->
+<!-- ========================= -->
+
+<p-dialog [(visible)]="mostrarDialogoTicket"
+[modal]="true"
+[style]="{width:'520px'}"
+styleClass="ticket-dialog">
+
+<h2 class="ticket-title">Crear Ticket</h2>
+
+<div class="ticket-form">
+
+<div class="field">
+
+
+
+<label>Título</label>
+<input pInputText [(ngModel)]="ticketSeleccionado.titulo" class="w-full"/>
+</div>
+
+<div class="field">
+
+<label>Descripción</label>
+<textarea pInputTextarea rows="3"
+[(ngModel)]="ticketSeleccionado.descripcion"
+class="w-full"></textarea>
+</div>
+
+<div class="grid">
+
+<label>Asignado a</label>
+
+<select [(ngModel)]="ticketSeleccionado.asignadoA" class="w-full">
+
+<option *ngFor="let m of grupoSeleccionado?.miembros"
+[value]="m.nombre">
+
+{{m.nombre}}
+</option>
+</select>
+</div>
+
+<div class="field col">
+
+<label>Prioridad</label>
+
+<select [(ngModel)]="ticketSeleccionado.prioridad" class="w-full">
+
+<option>Baja</option>
+<option>Media</option>
+<option>Alta</option>
+
+</select>
+
+</div>
+
+</div>
+
+<div class="field">
+
+<label>Fecha límite</label>
+
+<input type="date"
+[(ngModel)]="ticketSeleccionado.fechaLimite"
+class="w-full"/>
+
+</div>
+
+
+<div class="field">
+
+<label>Comentarios</label>
+
+<textarea pInputTextarea rows="3"
+[(ngModel)]="ticketSeleccionado.comentarios"
+class="w-full"></textarea>
+
+</div>
+
+
+
+<div class="ticket-actions">
+
+<p-button
+label="Cancelar"
+icon="pi pi-times"
+styleClass="p-button-text"
+(onClick)="mostrarDialogoTicket=false">
+</p-button>
+
+<p-button
+label="Crear Ticket"
+icon="pi pi-check"
+styleClass="p-button-success"
+(onClick)="guardarTicket()">
+</p-button>
+
+</div>
+
 </p-dialog>
