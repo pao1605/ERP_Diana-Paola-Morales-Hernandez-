@@ -1,0 +1,150 @@
+<div class="user-container">
+
+  <p-card class="profile-card">
+
+    <!-- HEADER -->
+    <div class="profile-header">
+
+      <div class="avatar-circle">
+        <i class="pi pi-user"></i>
+      </div>
+
+      <h1 class="user-name">Perfil de Usuario</h1>
+
+      <span class="role-tag">
+        {{ rol }}
+      </span>
+
+    </div>
+
+
+    <!-- INFORMACIÓN -->
+    <div class="data-grid">
+
+      <div class="data-item">
+        <label><i class="pi pi-id-card"></i> Usuario</label>
+        <p>{{ usuario }}</p>
+      </div>
+
+      <div class="data-item">
+        <label><i class="pi pi-user"></i> Nombre Completo</label>
+        <p>{{ nombreCompleto }}</p>
+      </div>
+
+      <div class="data-item">
+        <label><i class="pi pi-envelope"></i> Correo Electrónico</label>
+        <p>{{ email }}</p>
+      </div>
+
+      <div class="data-item">
+        <label><i class="pi pi-map-marker"></i> Dirección</label>
+        <p>{{ direccion }}</p>
+      </div>
+
+      <div class="data-item">
+        <label><i class="pi pi-calendar"></i> Edad</label>
+        <p>{{ edad }} años</p>
+      </div>
+
+      <div class="data-item">
+        <label><i class="pi pi-phone"></i> Teléfono</label>
+        <p>{{ telefono }}</p>
+      </div>
+
+    </div>
+
+
+    <!-- BOTONES -->
+    <div class="profile-actions">
+
+      <p-button
+        label="Editar Perfil"
+        icon="pi pi-user-edit"
+        class="p-button-rounded p-button-outlined"
+        (onClick)="abrirModal()">
+      </p-button>
+
+      <p-button
+        label="Eliminar Cuenta"
+        icon="pi pi-trash"
+        severity="danger"
+        class="p-button-rounded p-button-text"
+        (onClick)="eliminarPerfil()">
+      </p-button>
+
+    </div>
+
+  </p-card>
+
+</div>
+
+
+<!-- MODAL EDITAR PERFIL -->
+<p-dialog
+  header="Editar Información Personal"
+  [(visible)]="displayModal"
+  [modal]="true"
+  [style]="{width:'90%', maxWidth:'450px'}"
+  [draggable]="false"
+  [resizable]="false">
+
+  <div class="edit-form" style="display:flex; flex-direction:column; gap:1rem; padding-top:1rem;">
+
+    <div class="field">
+      <label>Nombre Completo</label>
+      <input
+        type="text"
+        pInputText
+        [(ngModel)]="nombreCompleto"
+        style="width:100%" />
+    </div>
+
+    <div class="field">
+      <label>Dirección</label>
+      <input
+        type="text"
+        pInputText
+        [(ngModel)]="direccion"
+        style="width:100%" />
+    </div>
+
+    <div class="field">
+      <label>Teléfono</label>
+      <input
+        type="text"
+        pInputText
+        [(ngModel)]="telefono"
+        style="width:100%" />
+    </div>
+
+    <div class="field">
+      <label>Edad</label>
+      <input
+        type="number"
+        pInputText
+        [(ngModel)]="edad"
+        style="width:100%" />
+    </div>
+
+  </div>
+
+
+  <!-- FOOTER -->
+  <ng-template pTemplate="footer">
+
+    <p-button
+      label="Cancelar"
+      icon="pi pi-times"
+      (onClick)="displayModal=false"
+      styleClass="p-button-text">
+    </p-button>
+
+    <p-button
+      label="Guardar Cambios"
+      icon="pi pi-check"
+      (onClick)="guardarCambios()">
+    </p-button>
+
+  </ng-template>
+
+</p-dialog>

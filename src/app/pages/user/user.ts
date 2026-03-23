@@ -1,54 +1,130 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CardModule } from 'primeng/card';
+import { FormsModule } from '@angular/forms';
+
+import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router'; 
+import { InputTextModule } from 'primeng/inputtext';
+import { CheckboxModule } from 'primeng/checkbox';
+import { TagModule } from 'primeng/tag';
+
+import { UserService } from '../../services/user';
+import { User } from '../../models/user';
 
 @Component({
-  selector: 'app-user', // 1. CAMBIADO: Antes decía 'app-user'
+  selector: 'app-users',
   standalone: true,
   imports: [
-    CommonModule, 
-    CardModule, 
+    CommonModule,
+    FormsModule,
+    TableModule,
     ButtonModule,
     DialogModule,
-    FormsModule
+    InputTextModule,
+    CheckboxModule,
+    TagModule
   ],
   templateUrl: './user.html',
   styleUrls: ['./user.scss']
 })
-export class UserComponent {
-  // Datos personales de Pao
-  usuario: string = 'Pao';
-  nombreCompleto: string = 'Diana Paola Morales';
-  email: string = 'pao@gmail.com';
-  direccion: string = 'AV Real del marques';
-  edad: number = 20;
-  telefono: string = '4421230996';
-  rol: string = 'Administrador';
+export class UserComponent implements OnInit {
 
-  displayModal: boolean = false;
+  usuarios: User[] = [];
 
-  constructor(private router: Router) {} 
+  mostrarDialogo = false;
 
-  abrirModal() {
-    this.displayModal = true;
+  esEdicion = false;
+
+  permisosDisponibles = [
+    'groups_view',
+    'groups_add',
+    'groups_edit',
+    'groups_delete',
+    'ticket_view',
+    'ticket_add',
+    'ticket_edit',
+    'ticket_delete',
+    'user_view',
+    'user_add',
+    'user_edit',
+    'user_delete'
+  ];
+
+  usuarioSeleccionado: User = {
+    id: 0,
+    nombre: '',
+    email: '',
+    permisos: []
+  };
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+
+    this.usuarios = this.userService.obtenerUsuarios();
+
   }
 
-  guardarCambios() {
-    this.displayModal = false;
-    console.log('Datos actualizados correctamente');
+  nuevoUsuario(){
+
+    this.esEdicion = false;
+
+    this.usuarioSeleccionado = {
+      id: 0,
+      nombre:'',
+      email:'',
+      permisos:[]
+    };
+
+    this.mostrarDialogo = true;
+
   }
 
-  eliminarPerfil() {
-    if (confirm('¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.')) {
-      this.usuario = '';
-      this.nombreCompleto = '';
-      this.email = '';
-      console.log('Perfil eliminado');
-      this.router.navigate(['/login']);
+  editarUsuario(user:User){
+
+    this.esEdicion = true;
+
+    this.usuarioSeleccionado = {...user};
+
+    this.mostrarDialogo = true;
+
+  }
+
+  guardarUsuario(){
+
+    if(this.esEdicion){
+
+      this.userService.actualizarUsuario(this.usuarioSeleccionado);
+
+    }else{
+
+      this.usuarioSeleccionado.id = this.generarId();
+
+      this.userService.agregarUsuario(this.usuarioSeleccionado);
+
     }
+
+    this.usuarios = this.userService.obtenerUsuarios();
+
+    this.mostrarDialogo = false;
+
   }
+
+  eliminarUsuario(id:number){
+
+    this.userService.eliminarUsuario(id);
+
+    this.usuarios = this.userService.obtenerUsuarios();
+
+  }
+
+  generarId(){
+
+    if(this.usuarios.length === 0) return 1;
+
+    return Math.max(...this.usuarios.map(u => u.id)) + 1;
+
+  }
+
 }

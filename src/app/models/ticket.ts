@@ -1,11 +1,25 @@
 export interface Ticket {
-  id: number;
+
+  id?: number;
+
   titulo: string;
+
   descripcion: string;
-  estado: 'Pendiente' | 'En proceso' | 'Revisión' | 'Finalizado';
+
+  estado: 'Pendiente' | 'En progreso' | 'Revisión' | 'Finalizado';
+
   prioridad: 'Alta' | 'Media' | 'Baja';
+
   fechaCreacion: Date;
+
   fechaLimite: Date;
-  asignadoA: string; // ID o Nombre del usuario
-  grupoId: number;   // Relación con el grupo
+
+  asignadoA: string;
+
+  grupoId?: number;
+
+  comentarios?: string;
+
+  historial?: string;
+
 }

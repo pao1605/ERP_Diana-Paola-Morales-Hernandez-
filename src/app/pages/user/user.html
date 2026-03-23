@@ -1,98 +1,144 @@
 <div class="user-container">
-  <p-card class="profile-card">
-    <div class="profile-header">
-      <div class="avatar-circle">
-        <i class="pi pi-user"></i>
-      </div>
-      <h1 class="user-name">Perfil de Usuario</h1>
-      <span class="role-tag">{{ rol }}</span>
-    </div>
 
-    <div class="data-grid">
-      <div class="data-item">
-        <label><i class="pi pi-id-card"></i> Usuario</label>
-        <p>{{ usuario }}</p>
-      </div>
+<h2>Gestión de Usuarios</h2>
 
-      <div class="data-item">
-        <label><i class="pi pi-user"></i> Nombre Completo</label>
-        <p>{{ nombreCompleto }}</p>
-      </div>
+<p-button
+label="Nuevo Usuario"
+icon="pi pi-plus"
+styleClass="p-button-success"
+(click)="nuevoUsuario()">
+</p-button>
 
-      <div class="data-item">
-        <label><i class="pi pi-envelope"></i> Correo Electrónico</label>
-        <p>{{ email }}</p>
-      </div>
 
-      <div class="data-item">
-        <label><i class="pi pi-map-marker"></i> Dirección</label>
-        <p>{{ direccion }}</p>
-      </div>
+<p-table
+[value]="usuarios"
+styleClass="p-datatable-striped">
 
-      <div class="data-item">
-        <label><i class="pi pi-calendar"></i> Edad</label>
-        <p>{{ edad }} años</p>
-      </div>
+<ng-template pTemplate="header">
 
-      <div class="data-item">
-        <label><i class="pi pi-phone"></i> Teléfono</label>
-        <p>{{ telefono }}</p>
-      </div>
-    </div>
+<tr>
+<th>ID</th>
+<th>Nombre</th>
+<th>Email</th>
+<th>Permisos</th>
+<th>Acciones</th>
+</tr>
 
-    <div class="profile-actions">
-      <p-button label="Editar Perfil" 
-                icon="pi pi-user-edit" 
-                class="p-button-rounded p-button-outlined"
-                (onClick)="abrirModal()">
-      </p-button>
+</ng-template>
 
-      <p-button label="Eliminar Cuenta" 
-                icon="pi pi-trash" 
-                severity="danger" 
-                class="p-button-rounded p-button-text"
-                (onClick)="eliminarPerfil()">
-      </p-button>
-    </div>
-  </p-card>
+<ng-template pTemplate="body" let-user>
+
+<tr>
+
+<td>{{user.id}}</td>
+
+<td>{{user.nombre}}</td>
+
+<td>{{user.email}}</td>
+
+<td>
+
+<p-tag
+*ngFor="let permiso of user.permisos"
+[value]="permiso"
+severity="info"
+styleClass="mr-1">
+</p-tag>
+
+</td>
+
+<td class="actions">
+
+<button
+pButton
+icon="pi pi-pencil"
+class="p-button-info p-button-sm"
+(click)="editarUsuario(user)">
+</button>
+
+<button
+pButton
+icon="pi pi-trash"
+class="p-button-danger p-button-sm"
+(click)="eliminarUsuario(user.id)">
+</button>
+
+</td>
+
+</tr>
+
+</ng-template>
+
+</p-table>
+
 </div>
 
-<p-dialog header="Editar Información Personal" 
-          [(visible)]="displayModal" 
-          [modal]="true" 
-          [style]="{width: '90%', maxWidth: '450px'}" 
-          [draggable]="false" 
-          [resizable]="false">
-    
-    <div class="edit-form" style="display: flex; flex-direction: column; gap: 1rem; padding-top: 1rem;">
-        <div class="field">
-            <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Nombre Completo</label>
-            <input type="text" pInputText [(ngModel)]="nombreCompleto" style="width: 100%" />
-        </div>
-        <div class="field">
-            <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Dirección</label>
-            <input type="text" pInputText [(ngModel)]="direccion" style="width: 100%" />
-        </div>
-        <div class="field">
-            <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Teléfono</label>
-            <input type="text" pInputText [(ngModel)]="telefono" style="width: 100%" />
-        </div>
-        <div class="field">
-            <label style="display: block; font-weight: bold; margin-bottom: 0.5rem;">Edad</label>
-            <input type="number" pInputText [(ngModel)]="edad" style="width: 100%" />
-        </div>
-    </div>
-    
-    <ng-template pTemplate="footer">
-        <p-button label="Cancelar" 
-                  icon="pi pi-times" 
-                  (onClick)="displayModal=false" 
-                  styleClass="p-button-text p-button-secondary">
-        </p-button>
-        <p-button label="Guardar Cambios" 
-                  icon="pi pi-check" 
-                  (onClick)="guardarCambios()" 
-                  autofocus>
-        </p-button>
-    </ng-template>
+
+<p-dialog
+header="Usuario"
+[(visible)]="mostrarDialogo"
+[modal]="true"
+[style]="{width:'450px'}">
+
+<div class="field">
+
+<label>Nombre</label>
+
+<input
+pInputText
+[(ngModel)]="usuarioSeleccionado.nombre"
+class="w-full">
+
+</div>
+
+<div class="field">
+
+<label>Email</label>
+
+<input
+pInputText
+[(ngModel)]="usuarioSeleccionado.email"
+class="w-full">
+
+</div>
+
+<div class="field">
+
+<label>Permisos</label>
+
+<div class="permisos">
+
+<div *ngFor="let permiso of permisosDisponibles">
+
+<p-checkbox
+[name]="permiso"
+[value]="permiso"
+[(ngModel)]="usuarioSeleccionado.permisos">
+</p-checkbox>
+
+<label>{{permiso}}</label>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="dialog-actions">
+
+<p-button
+label="Cancelar"
+class="p-button-text"
+(click)="mostrarDialogo=false">
+</p-button>
+
+<p-button
+label="Guardar"
+icon="pi pi-check"
+styleClass="p-button-success"
+(click)="guardarUsuario()">
+</p-button>
+
+</div>
+
 </p-dialog>

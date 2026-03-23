@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 
 import { PermissionsService } from '../../../services/permissions';
+import { AuthService } from '../../../services/auth';
 
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -29,6 +30,7 @@ import { ToastModule } from 'primeng/toast';
 export class LoginComponent {
 
   private permsSvc = inject(PermissionsService);
+  private authSvc = inject(AuthService);
 
   loginForm: FormGroup;
 
@@ -56,13 +58,14 @@ export class LoginComponent {
       return;
     }
 
-    const { user, password } = this.loginForm.value;
+    const user = this.loginForm.value.user?.toLowerCase();
+    const password = this.loginForm.value.password;
 
     /* =======================
        SUPER ADMIN
     ======================= */
 
-    if (user === 'Pao' && password === 'Pao@162005') {
+    if (user === 'pao' && password === 'Pao@162005') {
 
       const permisosSuperAdmin = [
         'groups_view','groups_edit','groups_delete','groups_add',
@@ -72,8 +75,17 @@ export class LoginComponent {
 
       this.permsSvc.setPermissions(permisosSuperAdmin);
 
-      this.loginSuccess('Bienvenido Super Admin');
+      this.authSvc.login({
+        username:'pao',
+        nombre:'Diana Paola Morales',
+        email:'pao@gmail.com',
+        direccion:'AV Real del marques',
+        telefono:'4421230996',
+        edad:20,
+        rol:'Super Admin'
+      });
 
+      this.loginSuccess('Bienvenido Super Admin');
       return;
     }
 
@@ -92,13 +104,22 @@ export class LoginComponent {
 
       this.permsSvc.setPermissions(permisosUser);
 
-      this.loginSuccess('Bienvenido Usuario');
+      this.authSvc.login({
+        username:'gael',
+        nombre:'Gael Martinez',
+        email:'gael@email.com',
+        direccion:'Querétaro',
+        telefono:'4420000000',
+        edad:21,
+        rol:'Usuario'
+      });
 
+      this.loginSuccess('Bienvenido Usuario');
       return;
     }
 
     /* =======================
-       USUARIO SOLO LECTURA
+       VIEWER
     ======================= */
 
     if (user === 'viewer' && password === '1234') {
@@ -110,8 +131,17 @@ export class LoginComponent {
 
       this.permsSvc.setPermissions(permisosViewer);
 
-      this.loginSuccess('Bienvenido Usuario Viewer');
+      this.authSvc.login({
+        username:'viewer',
+        nombre:'Usuario Viewer',
+        email:'viewer@email.com',
+        direccion:'N/A',
+        telefono:'N/A',
+        edad:0,
+        rol:'Viewer'
+      });
 
+      this.loginSuccess('Bienvenido Usuario Viewer');
       return;
     }
 
@@ -126,7 +156,6 @@ export class LoginComponent {
     });
 
   }
-
 
   /* =======================
      LOGIN SUCCESS

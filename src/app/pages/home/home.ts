@@ -7,6 +7,8 @@ import { ChartModule } from 'primeng/chart';
 
 import { Ticket } from '../../models/ticket';
 import { TicketService } from '../../services/ticket';
+import { AuthService } from '../../services/auth';
+import { PermissionsService } from '../../services/permissions';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +22,6 @@ import { TicketService } from '../../services/ticket';
   templateUrl: './home.html',
   styleUrls: ['./home.scss']
 })
-
 export class HomeComponent implements OnInit {
 
   tickets: Ticket[] = [];
@@ -34,83 +35,83 @@ export class HomeComponent implements OnInit {
   chartData: any;
   chartOptions: any;
 
-  constructor(private ticketService: TicketService) {}
+  constructor(
+    private ticketService: TicketService,
+    private auth: AuthService,
+    private perms: PermissionsService
+  ) {}
 
   ngOnInit(): void {
 
-    /* Escuchar cambios de tickets */
-
     this.ticketService.tickets$.subscribe(tickets => {
 
-      this.tickets = tickets;
+      const user = this.auth.getUser();
+
+      /* ========================= */
+      /* FILTRAR POR PERMISOS */
+      /* ========================= */
+
+      if (this.perms.hasPermission('ticket_delete')) {
+
+        // SUPER USUARIO (Pao) VE TODOS
+        this.tickets = tickets;
+
+      } else {
+
+        // USUARIO NORMAL SOLO LOS SUYOS
+        this.tickets = tickets.filter(
+          t => t.asignadoA?.toLowerCase() === user?.username?.toLowerCase()
+        );
+
+      }
 
       this.calcularKPIs();
-
       this.generarGrafica();
 
     });
 
   }
 
-  /* ========================= */
-  /* CALCULAR KPIs */
-  /* ========================= */
-
   calcularKPIs() {
 
-    this.totalTickets = this.tickets.length;
+   this.totalTickets = this.tickets.length;
 
     this.pendientes = this.tickets.filter(
-      t => t.estado === 'Pendiente'
+    t => t.estado?.toLowerCase() === 'pendiente'
     ).length;
 
     this.enProgreso = this.tickets.filter(
-      t => t.estado === 'En proceso'
+    t => t.estado?.toLowerCase() === 'en progreso'
     ).length;
 
     this.revision = this.tickets.filter(
-      t => t.estado === 'Revisión'
-    ).length;
+    t => t.estado?.toLowerCase() === 'revisión'
+   ).length;
 
     this.finalizados = this.tickets.filter(
-      t => t.estado === 'Finalizado'
+    t => t.estado?.toLowerCase() === 'finalizado'
     ).length;
 
   }
-
-  /* ========================= */
-  /* GENERAR GRAFICA */
-  /* ========================= */
-
   generarGrafica() {
 
     this.chartData = {
-
-      labels: [
-        'Pendiente',
-        'En proceso',
-        'Revisión',
-        'Finalizado'
-      ],
-
+      labels: ['Pendiente','En progreso','Revisión','Finalizado'],
       datasets: [
         {
           label: 'Tickets',
-
           data: [
             this.pendientes,
             this.enProgreso,
             this.revision,
             this.finalizados
           ],
-
           backgroundColor: [
             '#ffc107',
             '#17a2b8',
             '#6f42c1',
             '#28a745'
           ],
-
           hoverOffset: 4
         }
       ]

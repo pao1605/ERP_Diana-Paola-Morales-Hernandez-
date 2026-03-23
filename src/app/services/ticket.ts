@@ -7,34 +7,66 @@ import { Ticket } from '../models/ticket';
 })
 export class TicketService {
 
-  private tickets: Ticket[] = [
-    {
-      id: 1,
-      titulo: 'Error login',
-      descripcion: 'No permite iniciar sesión',
-      estado: 'Pendiente',
-      prioridad: 'Alta',
-      fechaCreacion: new Date(),
-      fechaLimite: new Date(),
-      asignadoA: 'Juan',
-      grupoId: 1
-    }
-  ];
+  private tickets: Ticket[] = [];
 
-  private ticketsSubject = new BehaviorSubject<Ticket[]>(this.tickets);
+  private ticketsSubject = new BehaviorSubject<Ticket[]>([]);
 
   tickets$ = this.ticketsSubject.asObservable();
 
+  constructor() {
+
+  const gruposGuardados = localStorage.getItem('grupos');
+
+  if (gruposGuardados) {
+
+    const grupos = JSON.parse(gruposGuardados);
+
+    this.tickets = grupos.flatMap((g: any) => g.ticketsList || []);
+
+  }
+
+  this.ticketsSubject.next([...this.tickets]);
+
+}
 
   obtenerTickets(): Ticket[] {
-    return this.tickets;
+    return [...this.tickets];
   }
 
   agregarTicket(ticket: Ticket) {
 
     this.tickets.push(ticket);
 
-    this.ticketsSubject.next(this.tickets);
+    localStorage.setItem('tickets', JSON.stringify(this.tickets));
+
+    this.ticketsSubject.next([...this.tickets]);
+
+  }
+
+  actualizarTicket(ticketActualizado: Ticket) {
+
+    const index = this.tickets.findIndex(t => t.id === ticketActualizado.id);
+
+    if (index !== -1) {
+
+      this.tickets[index] = ticketActualizado;
+
+      localStorage.setItem('tickets', JSON.stringify(this.tickets));
+
+      this.ticketsSubject.next([...this.tickets]);
+
+    }
+
+  }
+
+
+  eliminarTicket(id: number) {
+
+   this.tickets = this.tickets.filter(
+    t => t.id !== id
+    );
+
+   this.ticketsSubject.next([...this.tickets]);
 
   }
 

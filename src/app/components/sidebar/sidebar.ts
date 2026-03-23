@@ -25,9 +25,10 @@ export class SidebarComponent {
       { label: 'Home', icon: 'pi pi-home', routerLink: '/home' },
       { label: 'Grupos', icon: 'pi pi-users', routerLink: '/group', permission: 'groups_view' },
       { label: 'Usuarios', icon: 'pi pi-user', routerLink: '/user', permission: 'user_view' },
+      { label: 'Perfil', icon: 'pi pi-id-card', routerLink: '/profile' },
 
-      
       { separator: true },
+
       { 
         label: 'Salir', 
         icon: 'pi pi-sign-out', 

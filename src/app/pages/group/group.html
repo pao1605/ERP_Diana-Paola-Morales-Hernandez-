@@ -8,17 +8,19 @@
 
 <p-button label="Grupos"
 [outlined]="vistaActual !== 'grupos'"
-(onClick)="vistaActual = 'grupos'">
+(onClick)="mostrarGrupos()">
 </p-button>
 
 <p-button label="Tickets"
 [outlined]="vistaActual !== 'tickets'"
-(onClick)="vistaActual = 'tickets'">
+(onClick)="mostrarTickets()">
 </p-button>
 
 </div>
 
-<p-button label="Nuevo Grupo"
+<p-button 
+*ngIf="vistaActual === 'grupos' && permsSvc.hasPermission('groups_add')"
+label="Nuevo Grupo"
 icon="pi pi-plus"
 styleClass="p-button-success mt-4"
 (onClick)="editarGrupo()">
@@ -85,12 +87,14 @@ class="p-button-text p-button-info"
 </button>
 
 <button pButton
+*ngIf="permsSvc.hasPermission('groups_delete')"
 icon="pi pi-trash"
 class="p-button-text p-button-danger"
-(click)="eliminarGrupo(grupo.id)">
+(click)="eliminarGrupo(grupo.id!)">
 </button>
 
 <button pButton
+*ngIf="permsSvc.hasPermission('ticket_add')"
 icon="pi pi-ticket"
 class="p-button-text p-button-warning"
 pTooltip="Crear Ticket"
@@ -161,7 +165,6 @@ class="p-button-text"
 <tr>
 <th>Nombre</th>
 <th>Email</th>
-<th>Rol</th>
 <th></th>
 </tr>
 
@@ -179,9 +182,7 @@ class="p-button-text"
 <input pInputText [(ngModel)]="miembro.email">
 </td>
 
-<td>
-<input pInputText [(ngModel)]="miembro.rol">
-</td>
+
 
 <td>
 
@@ -209,180 +210,264 @@ class="p-button-text p-button-danger"
 <!-- KANBAN TICKETS -->
 <!-- ========================= -->
 
-<div *ngIf="vistaActual === 'tickets' && grupoSeleccionado">
-
-<h2>
-Tickets del grupo: {{grupoSeleccionado.nombre}}
-</h2>
-
-<div class="kanban-grid">
 
 
-<!-- Pendiente -->
+<div *ngIf="vistaActual === 'tickets'" class="toolbar-tickets">
 
-<div class="kanban-column">
+  <div class="filtros">
+    <p-button
+      label="Todos"
+      icon="pi pi-list"
+      [outlined]="filtroTickets !== 'todos'"
+      (onClick)="filtroTickets='todos'">
+    </p-button>
 
-<h3>Pendiente</h3>
+    <p-button
+      label="Mis tickets"
+      icon="pi pi-user"
+      [outlined]="filtroTickets !== 'mis'"
+      (onClick)="filtroTickets='mis'">
+    </p-button>
 
-<div *ngFor="let ticket of obtenerTicketsPorEstado('Pendiente')" class="kanban-card">
+    <p-button
+      label="Sin asignar"
+      icon="pi pi-user-minus"
+      [outlined]="filtroTickets !== 'sin_asignar'"
+      (onClick)="filtroTickets='sin_asignar'">
+    </p-button>
 
-<h4>{{ticket.titulo}}</h4>
+    <p-button
+      label="Prioridad alta"
+      icon="pi pi-exclamation-triangle"
+      [outlined]="filtroTickets !== 'alta'"
+      (onClick)="filtroTickets='alta'">
+    </p-button>
+  </div>
 
-<p>{{ticket.descripcion}}</p>
+  <div class="vista-switch">
+    <p-button
+      label="Kanban"
+      icon="pi pi-th-large"
+      [outlined]="vistaTickets !== 'kanban'"
+      (onClick)="cambiarVistaTickets('kanban')">
+    </p-button>
 
-<small>
-Asignado: {{ticket.asignadoA}}
-</small>
-
-<div class="kanban-info">
-
-<p-tag [value]="ticket.prioridad"></p-tag>
-
-<small>
-{{ticket.fechaCreacion | date:'shortDate'}}
-</small>
-
-</div>
-
-<button pButton
-icon="pi pi-arrow-right"
-class="p-button-text"
-(click)="moverTicket(ticket,'En progreso')">
-</button>
-
-</div>
-
-</div>
-
-
-<!-- En progreso -->
-
-<div class="kanban-column">
-
-<h3>En progreso</h3>
-
-<div *ngFor="let ticket of obtenerTicketsPorEstado('En progreso')" class="kanban-card">
-
-<h4>{{ticket.titulo}}</h4>
-
-<p>{{ticket.descripcion}}</p>
-
-<small>
-Asignado: {{ticket.asignadoA}}
-</small>
-
-<div class="kanban-info">
-
-<p-tag [value]="ticket.prioridad"></p-tag>
-
-<small>
-{{ticket.fechaCreacion | date:'shortDate'}}
-</small>
+    <p-button
+      label="Tabla"
+      icon="pi pi-list"
+      [outlined]="vistaTickets !== 'tabla'"
+      (onClick)="cambiarVistaTickets('tabla')">
+    </p-button>
+  </div>
 
 </div>
 
-<button pButton
-icon="pi pi-arrow-left"
-class="p-button-text"
-(click)="moverTicket(ticket,'Pendiente')">
-</button>
+<div *ngIf="vistaActual === 'tickets' && grupoSeleccionado && esVistaKanban()">
 
-<button pButton
-icon="pi pi-arrow-right"
-class="p-button-text"
-(click)="moverTicket(ticket,'Revisión')">
-</button>
+  <h2>
+    Tickets del grupo: {{grupoSeleccionado?.nombre}}
+  </h2>
 
+  <div class="kanban-grid" cdkDropListGroup>
 
+    <!-- Pendiente -->
+    <div
+      class="kanban-column"
+      cdkDropList
+      id="col-pendiente"
+      [cdkDropListConnectedTo]="['col-enprogreso','col-revision','col-finalizado']"
+      [cdkDropListData]="obtenerTicketsPorEstado('Pendiente')"
+      (cdkDropListDropped)="drop($event,'Pendiente')">
 
+      <h3>Pendiente</h3>
+
+      <div
+        *ngFor="let ticket of obtenerTicketsPorEstado('Pendiente')"
+        class="kanban-card"
+        cdkDrag
+        [cdkDragData]="ticket"
+        (click)="abrirDetalleTicket(ticket)">
+
+        <h4>{{ticket.titulo}}</h4>
+        <p>{{ticket.descripcion}}</p>
+
+        <small>
+          Asignado: {{ticket.asignadoA}}
+        </small>
+
+        <div class="kanban-info">
+          <p-tag [value]="ticket.prioridad"></p-tag>
+          <small>{{ticket.fechaCreacion | date:'shortDate'}}</small>
+        </div>
+
+        <button
+          pButton
+          *ngIf="permsSvc.hasPermission('ticket_delete')"
+          icon="pi pi-trash"
+          class="p-button-text p-button-danger"
+          (click)="eliminarTicket(ticket); $event.stopPropagation()">
+        </button>
+
+      </div>
+    </div>
+
+    <!-- En progreso -->
+    <div
+      class="kanban-column"
+      cdkDropList
+      id="col-enprogreso"
+      [cdkDropListConnectedTo]="['col-pendiente','col-revision','col-finalizado']"
+      [cdkDropListData]="obtenerTicketsPorEstado('En progreso')"
+      (cdkDropListDropped)="drop($event,'En progreso')">
+
+      <h3>En progreso</h3>
+
+      <div
+        *ngFor="let ticket of obtenerTicketsPorEstado('En progreso')"
+        class="kanban-card"
+        cdkDrag
+        [cdkDragData]="ticket"
+        (click)="abrirDetalleTicket(ticket)">
+
+        <h4>{{ticket.titulo}}</h4>
+        <p>{{ticket.descripcion}}</p>
+
+        <small>Asignado: {{ticket.asignadoA}}</small>
+
+        <div class="kanban-info">
+          <p-tag [value]="ticket.prioridad"></p-tag>
+          <small>{{ticket.fechaCreacion | date:'shortDate'}}</small>
+        </div>
+
+        <button
+          pButton
+          *ngIf="permsSvc.hasPermission('ticket_delete')"
+          icon="pi pi-trash"
+          class="p-button-text p-button-danger"
+          (click)="eliminarTicket(ticket); $event.stopPropagation()">
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Revisión -->
+    <div
+      class="kanban-column"
+      cdkDropList
+      id="col-revision"
+      [cdkDropListConnectedTo]="['col-pendiente','col-enprogreso','col-finalizado']"
+      [cdkDropListData]="obtenerTicketsPorEstado('Revisión')"
+      (cdkDropListDropped)="drop($event,'Revisión')">
+
+      <h3>Revisión</h3>
+
+      <div
+        *ngFor="let ticket of obtenerTicketsPorEstado('Revisión')"
+        class="kanban-card"
+        cdkDrag
+        [cdkDragData]="ticket"
+        (click)="abrirDetalleTicket(ticket)">
+
+        <h4>{{ticket.titulo}}</h4>
+        <p>{{ticket.descripcion}}</p>
+
+        <small>Asignado: {{ticket.asignadoA}}</small>
+
+        <div class="kanban-info">
+          <p-tag [value]="ticket.prioridad"></p-tag>
+          <small>{{ticket.fechaCreacion | date:'shortDate'}}</small>
+        </div>
+
+        <button
+          pButton
+          *ngIf="permsSvc.hasPermission('ticket_delete')"
+          icon="pi pi-trash"
+          class="p-button-text p-button-danger"
+          (click)="eliminarTicket(ticket); $event.stopPropagation()">
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Finalizado -->
+    <div
+      class="kanban-column"
+      cdkDropList
+      id="col-finalizado"
+      [cdkDropListConnectedTo]="['col-pendiente','col-enprogreso','col-revision']"
+      [cdkDropListData]="obtenerTicketsPorEstado('Finalizado')"
+      (cdkDropListDropped)="drop($event,'Finalizado')">
+      
+
+      <h3>Finalizado</h3>
+
+      <div
+        *ngFor="let ticket of obtenerTicketsPorEstado('Finalizado')"
+        class="kanban-card"
+        cdkDrag
+        [cdkDragData]="ticket"
+        (click)="abrirDetalleTicket(ticket)">
+
+        <h4>{{ticket.titulo}}</h4>
+        <p>{{ticket.descripcion}}</p>
+
+        <small>Asignado: {{ticket.asignadoA}}</small>
+
+        <div class="kanban-info">
+          <p-tag [value]="ticket.prioridad"></p-tag>
+          <small>{{ticket.fechaCreacion | date:'shortDate'}}</small>
+        </div>
+
+        <button
+          pButton
+          *ngIf="permsSvc.hasPermission('ticket_delete')"
+          icon="pi pi-trash"
+          class="p-button-text p-button-danger"
+          (click)="eliminarTicket(ticket); $event.stopPropagation()">
+        </button>
+
+      </div>
+    </div>
+
+  </div>
 </div>
 
+
+
+<div *ngIf="vistaActual === 'tickets' && grupoSeleccionado && esVistaTabla()">
+
+  <h2>Lista de Tickets</h2>
+
+  <p-table
+    [value]="obtenerTicketsFiltradosTabla()"
+    [paginator]="true"
+    [rows]="10"
+    [tableStyle]="{'min-width': '60rem'}">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>Título</th>
+        <th>Estado</th>
+        <th>Asignado</th>
+        <th>Prioridad</th>
+        <th>Fecha límite</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-ticket>
+      <tr>
+        <td>{{ticket.id}}</td>
+        <td>{{ticket.titulo}}</td>
+        <td><p-tag [value]="ticket.estado"></p-tag></td>
+        <td>{{ticket.asignadoA}}</td>
+        <td><p-tag [value]="ticket.prioridad"></p-tag></td>
+        <td>{{ticket.fechaLimite | date:'shortDate'}}</td>
+      </tr>
+    </ng-template>
+
+  </p-table>
 </div>
-
-
-<!-- Revision -->
-
-<div class="kanban-column">
-
-<h3>Revisión</h3>
-
-<div *ngFor="let ticket of obtenerTicketsPorEstado('Revisión')" class="kanban-card">
-
-<h4>{{ticket.titulo}}</h4>
-
-<p>{{ticket.descripcion}}</p>
-
-<small>
-Asignado: {{ticket.asignadoA}}
-</small>
-
-<div class="kanban-info">
-
-<p-tag [value]="ticket.prioridad"></p-tag>
-
-<small>
-{{ticket.fechaCreacion | date:'shortDate'}}
-</small>
-
-</div>
-
-<button pButton
-icon="pi pi-arrow-left"
-class="p-button-text"
-(click)="moverTicket(ticket,'En progreso')">
-</button>
-
-<button pButton
-icon="pi pi-arrow-right"
-class="p-button-text"
-(click)="moverTicket(ticket,'Finalizado')">
-</button>
-
-</div>
-
-</div>
-
-
-<!-- Finalizado -->
-
-<div class="kanban-column">
-
-<h3>Finalizado</h3>
-
-<div *ngFor="let ticket of obtenerTicketsPorEstado('Finalizado')" class="kanban-card">
-
-<h4>{{ticket.titulo}}</h4>
-
-<p>{{ticket.descripcion}}</p>
-
-<small>
-Asignado: {{ticket.asignadoA}}
-</small>
-
-<div class="kanban-info">
-
-<p-tag [value]="ticket.prioridad"></p-tag>
-
-<small>
-{{ticket.fechaCreacion | date:'shortDate'}}
-</small>
-
-</div>
-
-<button pButton
-icon="pi pi-arrow-left"
-class="p-button-text"
-(click)="moverTicket(ticket,'Revisión')">
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
 
 
 <!-- ========================= -->
@@ -451,15 +536,11 @@ styleClass="ticket-dialog">
 <div class="ticket-form">
 
 <div class="field">
-
-
-
 <label>Título</label>
 <input pInputText [(ngModel)]="ticketSeleccionado.titulo" class="w-full"/>
 </div>
 
 <div class="field">
-
 <label>Descripción</label>
 <textarea pInputTextarea rows="3"
 [(ngModel)]="ticketSeleccionado.descripcion"
@@ -467,29 +548,23 @@ class="w-full"></textarea>
 </div>
 
 <div class="grid">
-
 <label>Asignado a</label>
 
 <select [(ngModel)]="ticketSeleccionado.asignadoA" class="w-full">
-
 <option *ngFor="let m of grupoSeleccionado?.miembros"
 [value]="m.nombre">
-
 {{m.nombre}}
 </option>
 </select>
 </div>
 
 <div class="field col">
-
 <label>Prioridad</label>
 
 <select [(ngModel)]="ticketSeleccionado.prioridad" class="w-full">
-
 <option>Baja</option>
 <option>Media</option>
 <option>Alta</option>
-
 </select>
 
 </div>
@@ -497,24 +572,19 @@ class="w-full"></textarea>
 </div>
 
 <div class="field">
-
 <label>Fecha límite</label>
 
 <input type="date"
 [(ngModel)]="ticketSeleccionado.fechaLimite"
 class="w-full"/>
-
 </div>
 
-
 <div class="field">
-
 <label>Comentarios</label>
 
 <textarea pInputTextarea rows="3"
 [(ngModel)]="ticketSeleccionado.comentarios"
 class="w-full"></textarea>
-
 </div>
 
 
@@ -534,6 +604,94 @@ icon="pi pi-check"
 styleClass="p-button-success"
 (onClick)="guardarTicket()">
 </p-button>
+
+</div>
+</p-dialog>
+
+<p-dialog 
+header="Detalle del Ticket"
+[(visible)]="mostrarDetalleTicket"
+[modal]="true"
+[style]="{width:'500px'}">
+
+<div *ngIf="ticketDetalle">
+
+<div class="field">
+<label>Título</label>
+<input pInputText [(ngModel)]="ticketDetalle.titulo" class="w-full"/>
+</div>
+
+<div class="field">
+<label>Descripción</label>
+<textarea pInputTextarea rows="3"
+[(ngModel)]="ticketDetalle.descripcion"
+class="w-full"></textarea>
+</div>
+
+<div class="field">
+<label>Estado</label>
+<select [(ngModel)]="ticketDetalle.estado" class="w-full">
+<option>Pendiente</option>
+<option>En progreso</option>
+<option>Revisión</option>
+<option>Finalizado</option>
+</select>
+</div>
+
+<div class="field">
+<label>Asignado a</label>
+<input pInputText [(ngModel)]="ticketDetalle.asignadoA" class="w-full"/>
+</div>
+
+<div class="field">
+<label>Prioridad</label>
+<select [(ngModel)]="ticketDetalle.prioridad" class="w-full">
+<option>Alta</option>
+<option>Media</option>
+<option>Baja</option>
+</select>
+</div>
+
+<div class="field">
+<label>Comentarios</label>
+<textarea pInputTextarea rows="3"
+[(ngModel)]="ticketDetalle.comentarios"
+class="w-full"></textarea>
+</div>
+
+<div class="flex justify-content-end gap-2 mt-4">
+
+<div class="field">
+
+<label>Historial</label>
+
+<textarea
+rows="5"
+pInputTextarea
+[ngModel]="ticketDetalle?.historial"
+readonly
+class="w-full">
+</textarea>
+
+</div>
+
+
+<p-button
+label="Cancelar"
+icon="pi pi-times"
+class="p-button-text"
+(onClick)="mostrarDetalleTicket=false">
+</p-button>
+
+<p-button
+*ngIf="permsSvc.hasPermission('ticket_edit')"
+label="Guardar cambios"
+icon="pi pi-check"
+styleClass="p-button-success"
+(onClick)="guardarCambiosTicket()">
+</p-button>
+
+</div>
 
 </div>
 
